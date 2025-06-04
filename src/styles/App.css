@@ -1,0 +1,99 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  background-color: #fff;
+}
+
+.app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.flex-grow {
+  flex: 1;
+}
+
+.page {
+  opacity: 0;
+  transform: translateX(20px);
+  transition: all 0.5s ease;
+}
+
+.page.active {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.fade-in {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 1s ease;
+}
+
+.fade-in.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Efek Hover pada Card */
+.card {
+  transition: all 0.5s ease;
+}
+
+.card .card-body h5:hover {
+  color: #FECB00; /* Warna kuning PLN */
+  cursor: pointer;
+}
+
+.card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transform: translateY(-5px) scale(1.02);
+}
+/* Efek Hover pada Tombol */
+.btn-pln {
+  background-color: #00A6E2;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-size: 1rem;
+  border-radius: 5px;
+  transition: all 0.3s ease;
+}
+
+.btn-pln:hover {
+  background-color: #FECB00; /* Warna kuning PLN */
+  color: black;
+} 
+
+/* Typewriter Effect */
+.typewriter h1 {
+  overflow: hidden; /* Sembunyikan teks yang belum muncul */
+  border-right: .15em solid orange; /* Cursor */
+  white-space: nowrap; /* Tetap dalam satu baris */
+  margin: 0 auto;
+  letter-spacing: .15em;
+  animation: 
+    typing 3.5s steps(40, end),
+    blink-caret .75s step-end infinite;
+}
+
+/* The typing effect */
+@keyframes typing {
+  from { width: 0 }
+  to { width: 100% }
+}
+
+/* The typewriter cursor effect */
+@keyframes blink-caret {
+  from, to { border-color: transparent }
+  50% { border-color: orange; }
+}
