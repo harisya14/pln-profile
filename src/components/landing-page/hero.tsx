@@ -113,7 +113,7 @@ const HeroSection = forwardRef<HTMLElement, HeroSectionProps>(
         ))}
 
         {/* Overlay Content */}
-        <div className="absolute inset-0 bg-black/30 z-10 flex flex-col items-center justify-center text-center px-6">
+        <div className="absolute inset-0 bg-black/25 z-10 flex flex-col items-center justify-center text-center px-6">
           <h2 className="text-4xl lg:text-5xl font-extrabold text-white mb-4 drop-shadow-lg whitespace-pre-line">
             {title}
           </h2>
@@ -124,10 +124,10 @@ const HeroSection = forwardRef<HTMLElement, HeroSectionProps>(
 
           {ctaLink && (
             <Link
-            href={ctaLink}
-            className="bg-white text-primary font-semibold py-3 px-6 rounded-full shadow hover:bg-gray-100 transition"
+              href={ctaLink}
+              className="bg-white text-primary font-semibold py-3 px-6 rounded-full shadow hover:bg-[#089cdc] transition"
             >
-            {ctaText || "Browse Articles"}
+              {ctaText || "Browse Articles"}
             </Link>
           )}
         </div>

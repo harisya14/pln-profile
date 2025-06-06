@@ -2,6 +2,8 @@ import React from "react";
 import MainLayout from "@/src/components/layout";
 import HeroSection from "@/src/components/landing-page/hero";
 import MapSection from "@/src/components/landing-page/map";
+import TeamSection from "@/src/components/landing-page/team";
+import ContentSection from "@/src/components/landing-page/content";
 
 export default function HomePage() {
   return (
@@ -12,8 +14,8 @@ export default function HomePage() {
         ctaText="Hubungi Kami"
         ctaLink="/"
       />
-      {/* Tujuan, Visi, Misi */}
-      {/* Manajer */}
+      {/* Deskripsi/Tujuan/Visi & Misi */} <ContentSection/>
+      {/* Manajer */} <TeamSection/>
       {/* Articles Highlight */}
       <MapSection />
     </MainLayout>
