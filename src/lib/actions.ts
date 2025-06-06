@@ -1,20 +1,19 @@
 "use server";
 
 import { SignInValues } from "./form-schemas";
-import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 import { AuthError } from "next-auth";
-import { hashSync } from "bcryptjs";
 import { signIn, signOut } from "@/auth";
-import prisma from "./prisma";
-import { redirect } from "next/navigation";
 
-export const signInAction = async (
-  signInValues: SignInValues
-): Promise<{ success?: boolean; error?: string }> => {
+export const signInAction = async (signInValues: SignInValues) => {
   try {
-    await signIn("credentials", signInValues);
-    redirect("/dashboard");
+    await signIn("credentials", {
+      redirect: false,
+      ...signInValues,
+    });
+    return { success: true };
   } catch (error) {
+    console.error("❌ Login error:", error);
+
     if (error instanceof AuthError) {
       switch (error.type) {
         case "CredentialsSignin":
@@ -23,6 +22,7 @@ export const signInAction = async (
           return { error: "Authentication error. Please try again." };
       }
     }
+
     return { error: "Unexpected error occurred. Please try again later." };
   }
 };
@@ -30,8 +30,8 @@ export const signInAction = async (
 export const signOutAction = async (): Promise<{ success?: boolean; error?: string }> => {
   try {
     await signOut({ redirect: false });
-    redirect("/");
+    return { success: true };
   } catch (error) {
     return { error: "Failed to sign out. Please try again." };
   }
-};
+}
