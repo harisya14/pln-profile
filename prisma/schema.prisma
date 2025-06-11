@@ -53,7 +53,7 @@ model Article {
   slug        String        @unique // Untuk URL unik berdasarkan judul
   coverImage  String        // Link gambar sampul
   content     String        // Content dari rich text editor akan disimpan dalam bentuk String (HTML/JSON)
-  author      String        // Author akan ditulis manual di dashboard
+  image       String[]
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
 }

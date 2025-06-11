@@ -15,7 +15,7 @@ export default function SignInPage() {
             prefetch={false}
           >
             <img
-            src="https://dataset.jogjakota.go.id/uploads/group/2023-11-09-043411.205898LogoPLN.png"
+            src="images/Logo.png"
             alt="PLN Logo"
             className="w-10 h-auto"
           />

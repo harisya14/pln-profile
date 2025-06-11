@@ -13,8 +13,8 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 // Default images untuk hero section
 const defaultImages: string[] = [
   "/images/hero1.jpg",
-  "/images/hero2.jpg",
-  "/images/hero3.webp",
+  "/images/hero6.jpg",
+  "/images/hero5.jpg",
 ];
 
 interface HeroSectionProps {
@@ -113,7 +113,7 @@ const HeroSection = forwardRef<HTMLElement, HeroSectionProps>(
         ))}
 
         {/* Overlay Content */}
-        <div className="absolute inset-0 bg-black/25 z-10 flex flex-col items-center justify-center text-center px-6">
+        <div className="absolute inset-0 bg-black/10 z-10 flex flex-col items-center justify-center text-center px-6">
           <h2 className="text-4xl lg:text-5xl font-extrabold text-white mb-4 drop-shadow-lg whitespace-pre-line">
             {title}
           </h2>

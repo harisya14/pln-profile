@@ -12,9 +12,9 @@ cloudinary.config({
 
 type ArticleParams = {
   title: string
-  coverImage: string // Base64 encoded string
+  coverImage?: string // Optional Base64 string
+  image?: string[]    // Optional array of Base64 strings
   content: string
-  author: string
 }
 
 export async function GET(req: NextRequest) {
@@ -69,19 +69,35 @@ export async function POST(req: NextRequest) {
   const body: ArticleParams = await req.json()
 
   try {
-    const { title, coverImage, content, author } = body
+    const { title, coverImage, content, image } = body
 
-    if (!title || !coverImage || !content || !author) {
-      return NextResponse.json({ error: "All fields are required." }, { status: 400 })
+    if (!title || !coverImage || !content) {
+      return NextResponse.json(
+        { error: "Title, coverImage, and content are required." },
+        { status: 400 }
+      )
     }
 
-    const cloudinaryResponse = await cloudinary.uploader.upload(coverImage, {
+    // Upload cover image
+    const coverCloudRes = await cloudinary.uploader.upload(coverImage, {
       folder: "articles",
       public_id: title.toLowerCase().replace(/\s+/g, "-"),
     })
 
-    const imageUrl = cloudinaryResponse.secure_url
+    // Upload additional images
+    let uploadedImages: string[] = []
+    if (image?.length) {
+      const uploadPromises = image.map((img) =>
+        cloudinary.uploader.upload(img, {
+          folder: "articles",
+        })
+      )
 
+      const results = await Promise.all(uploadPromises)
+      uploadedImages = results.map((r) => r.secure_url)
+    }
+
+    // Generate unique slug
     let slug = title.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "")
     let existingSlug = await prisma.article.findUnique({ where: { slug } })
     let counter = 1
@@ -96,9 +112,9 @@ export async function POST(req: NextRequest) {
       data: {
         title,
         slug,
-        coverImage: imageUrl,
+        coverImage: coverCloudRes.secure_url,
+        image: uploadedImages,
         content,
-        author,
       },
     })
 
@@ -130,30 +146,46 @@ export async function PUT(req: NextRequest) {
       return NextResponse.json({ error: "Article not found" }, { status: 404 })
     }
 
-    const { title, coverImage, content, author } = body
+    const { title, coverImage, content, image } = body
 
-    if (!title || !coverImage || !content || !author) {
-      return NextResponse.json({ error: "All fields are required." }, { status: 400 })
+    if (!title || !content) {
+      return NextResponse.json(
+        { error: "Title and content are required." },
+        { status: 400 }
+      )
     }
 
-    let imageUrl = existingArticle.coverImage
-
-    const isBase64 = coverImage.startsWith("data:image/")
-    if (isBase64) {
-      const cloudinaryResponse = await cloudinary.uploader.upload(coverImage, {
+    // Handle cover image update only if provided
+    let newCoverImageUrl = existingArticle.coverImage
+    if (coverImage?.startsWith("data:image/")) {
+      const cloudRes = await cloudinary.uploader.upload(coverImage, {
         folder: "articles",
         public_id: title.toLowerCase().replace(/\s+/g, "-"),
       })
-      imageUrl = cloudinaryResponse.secure_url
+      newCoverImageUrl = cloudRes.secure_url
     }
 
+    // Handle additional images
+    let newImageUrls = existingArticle.image
+    if (image?.length) {
+      const uploadPromises = image.map((img) =>
+        cloudinary.uploader.upload(img, {
+          folder: "articles",
+        })
+      )
+
+      const results = await Promise.all(uploadPromises)
+      newImageUrls = results.map((r) => r.secure_url)
+    }
+
+    // Generate new slug if needed
     let newSlug = title.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "")
-    let existingSlug = await prisma.article.findUnique({ where: { slug: newSlug } })
+    let existingSlugCheck = await prisma.article.findUnique({ where: { slug: newSlug } })
     let counter = 1
 
-    while (existingSlug && existingSlug.id !== existingArticle.id) {
+    while (existingSlugCheck && existingSlugCheck.id !== existingArticle.id) {
       newSlug = `${newSlug}-${counter}`
-      existingSlug = await prisma.article.findUnique({ where: { slug: newSlug } })
+      existingSlugCheck = await prisma.article.findUnique({ where: { slug: newSlug } })
       counter++
     }
 
@@ -162,9 +194,9 @@ export async function PUT(req: NextRequest) {
       data: {
         title,
         slug: newSlug,
-        coverImage: imageUrl,
+        coverImage: newCoverImageUrl,
+        image: newImageUrls,
         content,
-        author,
       },
     })
 

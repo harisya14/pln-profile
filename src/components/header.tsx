@@ -11,6 +11,7 @@ type NavItem = {
 
 const navItems: NavItem[] = [
   { label: "Home", path: "/" },
+  { label: "Kegiatan", path: "/articles"}
   // Add more pages here as needed
 ];
 
@@ -44,7 +45,7 @@ const Navbar: React.FC = () => {
       <div className="flex justify-between items-center py-3">
         <Link href="/" className="text-lg flex items-center gap-1 font-bold text-primary">
           <img
-            src="https://dataset.jogjakota.go.id/uploads/group/2023-11-09-043411.205898LogoPLN.png"
+            src="images/Logo.png"
             alt="PLN Logo"
             className="w-10 h-auto mr-2"
           />
@@ -55,7 +56,7 @@ const Navbar: React.FC = () => {
         </Link>
 
         {/* Desktop Nav */}
-        <nav className="hidden md:flex space-x-8">
+        <nav className="hidden md:flex">
           {navItems.map(({ label, path }) => (
             <Link key={path} href={path} className={getLinkClass(path)}>
               {label}

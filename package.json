@@ -18,6 +18,7 @@
     "bcryptjs": "^3.0.2",
     "class-variance-authority": "^0.7.1",
     "cloudinary": "^2.6.1",
+    "date-fns": "^4.1.0",
     "generate": "^0.14.0",
     "lucide-react": "^0.513.0",
     "mongodb": "^6.17.0",
