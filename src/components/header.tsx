@@ -11,7 +11,7 @@ type NavItem = {
 
 const navItems: NavItem[] = [
   { label: "Home", path: "/" },
-  { label: "Kegiatan", path: "/articles"}
+  { label: "Kegiatan", path: "/kegiatan"}
   // Add more pages here as needed
 ];
 
@@ -45,7 +45,7 @@ const Navbar: React.FC = () => {
       <div className="flex justify-between items-center py-3">
         <Link href="/" className="text-lg flex items-center gap-1 font-bold text-primary">
           <img
-            src="images/Logo.png"
+            src="/images/Logo.png"
             alt="PLN Logo"
             className="w-10 h-auto mr-2"
           />

@@ -8,7 +8,7 @@ type ArticleCardProps = {
   slug: string
   coverImage: string
   createdAt: string // ISO string
-  excerpt: string
+  content: string
 }
 
 export default function ArticleCard({
@@ -16,7 +16,7 @@ export default function ArticleCard({
   slug,
   coverImage,
   createdAt,
-  excerpt,
+  content,
 }: ArticleCardProps) {
   return (
     <article className="group overflow-hidden rounded-lg shadow-sm transition hover:shadow-lg bg-white">
@@ -36,14 +36,14 @@ export default function ArticleCard({
           {format(new Date(createdAt), "dd MMM yyyy")}
         </time>
 
-        <Link href={`/articles/${slug}`}>
+        <Link href={`/kegiatan/${slug}`}>
           <h3 className="mt-0.5 text-lg font-semibold text-gray-900 hover:underline">
             {title}
           </h3>
         </Link>
 
         <p className="mt-2 line-clamp-3 text-sm text-gray-600">
-          {excerpt}
+          {content}
         </p>
       </div>
     </article>

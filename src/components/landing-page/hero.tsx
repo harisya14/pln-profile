@@ -156,8 +156,8 @@ const HeroSection = forwardRef<HTMLElement, HeroSectionProps>(
               onClick={() => goToSlide(i)}
               className={`w-3 h-3 rounded-full transition-all ${
                 i === currentIndex
-                  ? "bg-primary"
-                  : "bg-primary/50 hover:bg-primary/70"
+                  ? "bg-white"
+                  : "bg-white/50 hover:bg-white/70"
               } cursor-pointer`}
               aria-label={`Go to slide ${i + 1}`}
             />

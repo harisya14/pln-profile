@@ -12,10 +12,10 @@ export default function SearchInput() {
     const trimmed = query.trim()
 
     if (trimmed) {
-      router.push(`/articles?search=${encodeURIComponent(query.trim())}#latest-articles`)
+      router.push(`/kegiatan?search=${encodeURIComponent(query.trim())}#latest-articles`)
     }
     else {
-      router.push(`/articles#latest-articles`)
+      router.push(`/kegiatan#latest-articles`)
     }
   }
 
