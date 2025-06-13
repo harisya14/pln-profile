@@ -69,7 +69,7 @@ const MapSection: React.FC = () => {
     };
   }, []);
 
-  const baseTransition = "transition-all duration-1000 ease-in-out";
+  const baseTransition = "transition-all duration-700 ease-in-out";
 
   const headingClass = titleInView
     ? `opacity-100 translate-y-0 scale-100 ${baseTransition}`

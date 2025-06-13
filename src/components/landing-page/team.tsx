@@ -85,7 +85,7 @@ const TeamSection: React.FC = () => {
       <div className="py-8 px-4 mx-auto max-w-screen-xl text-center lg:py-16 lg:px-6">
         <div
           ref={titleBlockRef}
-          className={`mx-auto mb-8 max-w-screen-sm lg:mb-16 transform transition duration-1000 ease-in-out ${
+          className={`mx-auto mb-8 max-w-screen-sm lg:mb-16 transform transition duration-700 ease-in-out ${
             titleInView ? "opacity-100 translate-y-0 scale-100" : "opacity-0 -translate-y-8 scale-90"
           }`}
         >

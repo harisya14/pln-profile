@@ -33,7 +33,7 @@ const Navbar: React.FC = () => {
     `px-4 py-2 rounded-md transition-colors duration-300 ${
       isActive(path)
         ? "text-primary font-semibold underline"
-        : "text-primary/80 hover:text-primary"
+        : "text-primary/80 hover:text-blue-700 hover:scale-105"
     }`;
 
   return (

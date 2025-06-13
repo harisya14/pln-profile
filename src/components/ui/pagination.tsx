@@ -27,7 +27,7 @@ export default function Pagination({
   }
 
   return (
-    <ul className="flex justify-center gap-3 text-gray-900 mb-6">
+    <ul className="flex justify-center gap-3 text-gray-900 mt-6">
       <li>
         {currentPage > 1 && (
           <button

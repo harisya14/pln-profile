@@ -125,7 +125,7 @@ const HeroSection = forwardRef<HTMLElement, HeroSectionProps>(
           {ctaLink && (
             <Link
               href={ctaLink}
-              className="bg-white text-primary font-semibold py-3 px-6 rounded-full shadow hover:bg-[#089cdc] transition"
+              className="bg-white text-primary font-semibold py-3 px-6 rounded-full shadow hover:bg-blue-700 hover:text-white transition"
             >
               {ctaText || "Browse Articles"}
             </Link>
@@ -157,7 +157,7 @@ const HeroSection = forwardRef<HTMLElement, HeroSectionProps>(
               className={`w-3 h-3 rounded-full transition-all ${
                 i === currentIndex
                   ? "bg-white"
-                  : "bg-white/50 hover:bg-white/70"
+                  : "bg-black/40 hover:bg-black/70"
               } cursor-pointer`}
               aria-label={`Go to slide ${i + 1}`}
             />

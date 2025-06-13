@@ -38,7 +38,7 @@ const ContentSection: React.FC = () => {
       <div className="gap-16 items-center py-8 px-4 mx-auto max-w-screen-xl lg:grid lg:grid-cols-2 lg:py-16 lg:px-6">
         <div
           ref={textRef}
-          className={`font-light text-gray-500 sm:text-lg dark:text-gray-400 transform transition duration-1000 ease-in-out ${
+          className={`font-light text-gray-500 sm:text-lg dark:text-gray-400 transform transition duration-700 ease-in-out ${
             textInView ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-8"
           }`}
         >
@@ -54,7 +54,7 @@ const ContentSection: React.FC = () => {
         </div>
         <div
           ref={imageRef}
-          className={`grid grid-cols-2 gap-4 mt-8 transform transition duration-1000 ease-in-out ${
+          className={`grid grid-cols-2 gap-4 mt-8 transform transition duration-700 ease-in-out ${
             imageInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
           }`}
         >
