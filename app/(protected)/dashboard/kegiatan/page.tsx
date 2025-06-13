@@ -131,7 +131,7 @@ export default function ListArticle() {
                       </TableCell>
                       <TableCell className="text-right space-x-2">
                         <Button asChild variant="outline" size="sm">
-                          <Link href={`/dashboard/article/edit/${item.slug}`}>
+                          <Link href={`/dashboard/kegiatan/edit/${item.slug}`}>
                             <Pencil className="w-4 h-4 mr-1" />
                             Edit
                           </Link>

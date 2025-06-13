@@ -55,7 +55,7 @@ export default function LatestArticleSection({
         {/* Judul */}
         <h2
           ref={titleRef}
-          className={`mb-6 text-3xl lg:text-4xl font-extrabold text-secondary text-center transform transition-all duration-700 ease-in-out ${
+          className={`mb-6 lg:mb-6 text-3xl lg:text-4xl font-extrabold text-secondary text-center transform transition-all duration-700 ease-in-out ${
             titleInView ? "opacity-100 translate-y-0 scale-100" : "opacity-0 -translate-y-4 scale-90"
           }`}
         >
@@ -89,7 +89,7 @@ export default function LatestArticleSection({
         </div>
 
         {/* Tombol Lihat Semua */}
-        <div className="mt-6 text-center">
+        <div className="mt-6 lg:mt-10 text-center">
           <a
             href="/kegiatan#latest-articles"
             className="inline-block px-6 py-2 text-sm sm:text-base text-white font-medium bg-blue-700 hover:bg-blue-800 rounded-lg transition-colors duration-300"
