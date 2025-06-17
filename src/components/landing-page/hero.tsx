@@ -77,7 +77,7 @@ const HeroSection = forwardRef<HTMLElement, HeroSectionProps>(
             return prev;
           }
         });
-      }, 50);
+      }, 35);
 
       return () => clearInterval(typingInterval);
     }, [subtitle]);

@@ -78,8 +78,8 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
                   className="w-10 h-auto mr-2"
                 />
                 <div className="flex flex-col leading-tight">
-                  <h3 className="text-base font-semibold text-blue-900">UPT</h3>
-                  <h3 className="text-lg font-bold text-blue-900">Tanjung Karang</h3>
+                  <h3 className="text-base font-bold text-blue-900">UPT</h3>
+                  <h3 className="text-base font-bold text-blue-900">Tanjung Karang</h3>
                 </div>
               </Link>
             </div>
@@ -91,7 +91,14 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
           {/* Nav */}
           <nav className="space-y-2">
             {navItems.map(({ label, path, icon: Icon }) => {
-              const isActive = pathname === path;
+              let isActive = false;
+
+              if (label === "Dashboard") {
+                isActive = pathname === path;
+              } else {
+                isActive = pathname === path || pathname.startsWith(`${path}/`);
+              }
+
               return (
                 <Link
                   key={path}
@@ -114,7 +121,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
           {/* Logout Button */}
           <Button
             variant="destructive"
-            className="w-full flex items-center gap-2 mt-auto bg-red-700 hover:bg-red-900"
+            className="w-full flex items-center gap-2 mt-auto bg-red-600 hover:bg-red-700"
             onClick={handleLogout}
             disabled={isPending}
           >
@@ -132,7 +139,10 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
             alt="PLN Logo"
             className="w-10 h-auto mr-2"
           />
-          <span className="font-semibold text-blue-700">PLN UPT TK</span>
+          <div className="flex flex-col leading-tight">
+            <h3 className="text-base font-bold text-blue-900">UPT</h3>
+            <h3 className="text-base font-bold text-blue-900">Tanjung Karang</h3>
+          </div>
         </Link>
         <Button
           variant="ghost"

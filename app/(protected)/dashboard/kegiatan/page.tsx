@@ -105,6 +105,7 @@ export default function ListArticle() {
                     <TableHead>Cover</TableHead>
                     <TableHead>Content</TableHead>
                     <TableHead>Dibuat</TableHead>
+                    <TableHead>Diedit</TableHead>
                     <TableHead className="text-left">Aksi</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -112,7 +113,7 @@ export default function ListArticle() {
                   {paginated.map((item, i) => (
                     <TableRow key={item.slug}>
                       <TableCell className="text-center">{startIndex + i + 1}</TableCell>
-                      <TableCell>{item.title}</TableCell>
+                      <TableCell className="w-48 max-w-xs break-words whitespace-normal prose prose-sm h-12">{item.title}</TableCell>
                       <TableCell>
                         <img
                           src={item.coverImage}
@@ -121,15 +122,21 @@ export default function ListArticle() {
                           onClick={() => setSelectedImage(item.coverImage)}
                         />
                       </TableCell>
-                      <TableCell className="w-64 max-w-xs break-words whitespace-normal">
-                        {item.content}
-                      </TableCell>
+                      <TableCell 
+                        className="w-64 max-w-xs break-words whitespace-normal prose prose-sm line-clamp-2 h-12"
+                        dangerouslySetInnerHTML={{ __html: item.content }}
+                      />
                       <TableCell>
                         {item.createdAt
                           ? new Date(item.createdAt).toLocaleDateString("id-ID")
                           : "-"}
                       </TableCell>
-                      <TableCell className="text-right space-x-2">
+                                            <TableCell>
+                        {item.createdAt
+                          ? new Date(item.updatedAt).toLocaleDateString("id-ID")
+                          : "-"}
+                      </TableCell>
+                      <TableCell className="text-center space-x-3">
                         <Button asChild variant="outline" size="sm">
                           <Link href={`/dashboard/kegiatan/edit/${item.slug}`}>
                             <Pencil className="w-4 h-4 mr-1" />
@@ -143,7 +150,7 @@ export default function ListArticle() {
                               variant="destructive"
                               size="sm"
                               disabled={deletingId === item.slug}
-                              className="bg-red-700 hover:bg-red-900"
+                              className="bg-red-600 hover:bg-red-700"
                             >
                               <Trash2 className="w-4 h-4 mr-1" />
                               {deletingId === item.slug ? "Menghapus..." : "Hapus"}
@@ -160,7 +167,7 @@ export default function ListArticle() {
                             <AlertDialogFooter>
                               <AlertDialogCancel>Batal</AlertDialogCancel>
                               <AlertDialogAction
-                              className="bg-red-700 text-white hover:bg-red-900"
+                              className="bg-red-600 text-white hover:bg-red-700"
                                 onClick={() => {
                                   setDeletingId(item.slug);
                                   handleDelete(item.slug);

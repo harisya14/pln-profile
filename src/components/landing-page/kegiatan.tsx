@@ -50,8 +50,8 @@ export default function LatestArticleSection({
   const displayedArticles = articles.slice(0, limit)
 
   return (
-    <section className="bg-primary px-4 py-6 sm:px-6 lg:px-10 lg:py-10">
-      <div className="max-w-7xl mx-auto">
+    <section className="bg-primary px-6 py-6 lg:px-10 lg:py-6">
+      <div className="max-w-8xl mx-auto">
         {/* Judul */}
         <h2
           ref={titleRef}
@@ -89,7 +89,7 @@ export default function LatestArticleSection({
         </div>
 
         {/* Tombol Lihat Semua */}
-        <div className="mt-6 lg:mt-10 text-center">
+        <div className="mt-6 text-center">
           <a
             href="/kegiatan#latest-articles"
             className="inline-block px-6 py-2 text-sm sm:text-base text-white font-medium bg-blue-700 hover:bg-blue-800 rounded-lg transition-colors duration-300"

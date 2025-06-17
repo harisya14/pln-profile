@@ -1,15 +1,15 @@
-import * as React from "react"
-import Image from "next/image"
-import Link from "next/link"
-import { format } from "date-fns"
+import * as React from "react";
+import Image from "next/image";
+import Link from "next/link";
+import { format } from "date-fns";
 
 type ArticleCardProps = {
-  title: string
-  slug: string
-  coverImage: string
-  createdAt: string // ISO string
-  content: string
-}
+  title: string;
+  slug: string;
+  coverImage: string;
+  createdAt: string; // ISO string
+  content: string;
+};
 
 export default function ArticleCard({
   title,
@@ -20,7 +20,7 @@ export default function ArticleCard({
 }: ArticleCardProps) {
   return (
     <Link href={`/kegiatan/${slug}`} className="block group">
-      <article className="overflow-hidden rounded-lg shadow-sm transition hover:shadow-lg bg-white hover:scale-105">
+      <article className="overflow-hidden rounded-lg shadow-sm transition hover:shadow-xl bg-white hover:scale-105">
         <div className="relative h-56 w-full overflow-hidden">
           <Image
             src={coverImage}
@@ -41,11 +41,15 @@ export default function ArticleCard({
             {title}
           </h3>
 
-          <p className="mt-2 line-clamp-3 text-sm text-gray-600">
-            {content}
-          </p>
+          {/* Render HTML content */}
+          <div className="mt-2 h-16">
+            <div
+              className="line-clamp-3 text-sm text-gray-600 prose prose-sm overflow-hidden"
+              dangerouslySetInnerHTML={{ __html: content }}
+            />
+          </div>
         </div>
       </article>
     </Link>
-  )
+  );
 }
