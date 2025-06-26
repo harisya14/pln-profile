@@ -62,7 +62,11 @@ export default function ArticleDetailPage() {
             )}
 
             <div
-              className="prose prose-lg max-w-none [&_h1]:text-2xl [&_h1]:font-bold [&_h2]:text-xl [&_h2]:font-semibold [&_h3]:text-lg [&_h3]:font-medium"
+              className="prose prose-lg max-w-none 
+                [&_h1]:text-2xl [&_h1]:font-bold 
+                [&_h2]:text-xl [&_h2]:font-semibold 
+                [&_h3]:text-lg [&_h3]:font-medium 
+                [&_span]:bg-transparent [&_span]:text-inherit"
               dangerouslySetInnerHTML={{ __html: article.content }}
             />
 

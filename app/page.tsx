@@ -7,6 +7,7 @@ import MapSection from "@/src/components/landing-page/map"
 import TeamSection from "@/src/components/landing-page/team"
 import ContentSection from "@/src/components/landing-page/content"
 import LatestArticleSection from "@/src/components/landing-page/kegiatan"
+import GarduSection from "@/src/components/landing-page/gardu"
 
 type Article = {
   id: string
@@ -51,6 +52,7 @@ export default function HomePage() {
 
       {/* Artikel Terbaru */}
       <LatestArticleSection articles={articles} loading={loading} />
+      <GarduSection articles={articles} loading={loading}/>
 
       <MapSection />
     </MainLayout>

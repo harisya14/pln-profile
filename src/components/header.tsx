@@ -11,8 +11,9 @@ type NavItem = {
 
 const navItems: NavItem[] = [
   { label: "Home", path: "/" },
-  { label: "Kegiatan", path: "/kegiatan"}
-  // Add more pages here as needed
+  { label: "Kegiatan", path: "/kegiatan" },
+  { label: "Manajemen", path: "/manajemen" },
+  { label: "Gardu Induk", path: "/gardu-induk" }
 ];
 
 const Navbar: React.FC = () => {

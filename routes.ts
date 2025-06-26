@@ -9,6 +9,10 @@ export const publicRoutes = [
   "/kegiatan",
   "/kegiatan/*",
   "/api/kegiatan",
+  "/gardu-induk",
+  "/gardu-induk/*",
+  "/manajemen",
+  "/manajemen/*",
 ];
 
 export const authRoutes = ["/sign-in"];
