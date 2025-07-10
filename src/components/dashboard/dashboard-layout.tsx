@@ -9,11 +9,12 @@ import {
   Menu,
   X,
   LogOut,
+  Zap, // Import ikon Zap untuk Gardu Induk
 } from "lucide-react";
 import clsx from "clsx";
 import { Button } from "@/src/components/ui/button";
-import { signOutAction } from "@/src/lib/actions";
-import { toast } from "@/src/hooks/useToast";
+import { signOutAction } from "@/src/lib/actions"; // Asumsi ini adalah action signOut Anda
+import { toast } from "@/src/hooks/useToast"; // Asumsi ini adalah hook toast Anda
 
 const navItems = [
   {
@@ -26,6 +27,13 @@ const navItems = [
     path: "/dashboard/kegiatan",
     icon: BookOpen,
   },
+  // --- ITEM NAVIGASI BARU UNTUK GARDU INDUK ---
+  {
+    label: "Gardu Induk",
+    path: "/dashboard/gardu", // Sesuaikan dengan path halaman daftar gardu induk Anda
+    icon: Zap, // Menggunakan ikon Zap
+  },
+  // --- AKHIR ITEM NAVIGASI BARU ---
 ];
 
 type DashboardLayoutProps = {
@@ -72,6 +80,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
           <div className="flex flex-col gap-1 mb-6">
             <div className="flex items-center gap-3">
               <Link href="/" className="flex items-center gap-2">
+                {/* Pastikan path gambar logo ini benar */}
                 <img
                   src="/images/Logo.png"
                   alt="PLN Logo"
@@ -88,14 +97,16 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
             </p>
           </div>
 
-          {/* Nav */}
+          {/* Navigasi */}
           <nav className="space-y-2">
             {navItems.map(({ label, path, icon: Icon }) => {
               let isActive = false;
 
+              // Logika untuk menentukan item navigasi aktif
               if (label === "Dashboard") {
                 isActive = pathname === path;
               } else {
+                // Untuk item lain, aktif jika path persis sama atau dimulai dengan path tersebut
                 isActive = pathname === path || pathname.startsWith(`${path}/`);
               }
 
@@ -103,7 +114,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
                 <Link
                   key={path}
                   href={path}
-                  onClick={() => setOpen(false)}
+                  onClick={() => setOpen(false)} // Tutup sidebar mobile saat item diklik
                   className={clsx(
                     "flex items-center gap-3 px-3 py-2 rounded-md transition-colors",
                     isActive
@@ -118,7 +129,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
             })}
           </nav>
 
-          {/* Logout Button */}
+          {/* Tombol Logout */}
           <Button
             variant="destructive"
             className="w-full flex items-center gap-2 mt-auto bg-red-600 hover:bg-red-700"
@@ -131,9 +142,10 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
         </div>
       </aside>
 
-      {/* Mobile Header */}
+      {/* Header Mobile (untuk toggle sidebar) */}
       <header className="md:hidden flex items-center justify-between p-4 bg-white shadow-md sticky top-0 z-40">
         <Link href="/dashboard" className="flex items-center gap-2">
+          {/* Pastikan path gambar logo ini benar */}
           <img
             src="/images/Logo.png"
             alt="PLN Logo"
@@ -153,7 +165,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
         </Button>
       </header>
 
-      {/* Main Content */}
+      {/* Konten Utama Dashboard */}
       <main className="p-6 pt-4 md:ml-[272px] min-h-screen">{children}</main>
     </div>
   );

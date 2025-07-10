@@ -57,3 +57,39 @@ model Article {
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
 }
+
+model ultgtarahan {
+  id               String       @id @default(auto()) @map("_id") @db.ObjectId
+  namagi           String
+  image            String
+  slug             String       @unique
+  alamat           String
+  googleMapsEmbed  String
+}
+
+model ultgtegineneng {
+  id               String       @id @default(auto()) @map("_id") @db.ObjectId
+  namagi           String
+  image            String
+  slug             String       @unique
+  alamat           String
+  googleMapsEmbed  String
+}
+
+model ultgpagelaran {
+  id               String       @id @default(auto()) @map("_id") @db.ObjectId
+  namagi           String
+  image            String
+  slug             String       @unique
+  alamat           String
+  googleMapsEmbed  String
+}
+
+model ultgkotabumi {
+  id               String       @id @default(auto()) @map("_id") @db.ObjectId
+  namagi           String
+  image            String
+  slug             String       @unique
+  alamat           String
+  googleMapsEmbed  String
+}

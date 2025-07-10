@@ -1,109 +1,165 @@
-"use client";
+"use client"; // Menandakan ini sebagai Client Component
 
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
-import MainLayout from "@/src/components/layout";
+import MainLayout from "@/src/components/layout"; // Pastikan path ini benar
 import Link from "next/link";
 
-// Data gardu per kategori ULTG
-const groupedGarduInduk = [
-  {
-    ulgt: "ULTG TARAHAN",
-    gardu: [
-      { slug: "teluk-betung", title: "Gardu Induk Teluk Betung", address: "Jalan Basuki Rahmat, Teluk Betung Selatan", image: "/images/gardu/teluk.jpg" },
-      { slug: "sutami", title: "Gardu Induk Sutami", address: "ULTG Tarahan", image: "/images/gardu/placeholder.jpg" },
-      { slug: "tarahan", title: "Gardu Induk Tarahan", address: "ULTG Tarahan", image: "/images/gardu/placeholder.jpg" },
-      { slug: "kalianda", title: "Gardu Induk Kalianda", address: "ULTG Tarahan", image: "/images/gardu/placeholder.jpg" },
-      { slug: "new-tarahan", title: "Gardu Induk New Tarahan", address: "ULTG Tarahan", image: "/images/gardu/placeholder.jpg" },
-      { slug: "sukarame", title: "Gardu Induk Sukarame", address: "ULTG Tarahan", image: "/images/gardu/placeholder.jpg" },
-      { slug: "sebalang", title: "Gardu Induk Sebalang", address: "ULTG Tarahan", image: "/images/gardu/placeholder.jpg" },
-      { slug: "sidomulyo", title: "Gardu Induk Sidomulyo", address: "ULTG Tarahan", image: "/images/gardu/placeholder.jpg" },
-      { slug: "jati-agung", title: "Gardu Induk Jati Agung", address: "ULTG Tarahan", image: "/images/gardu/placeholder.jpg" },
-      { slug: "ketapang", title: "Gardu Induk Ketapang", address: "ULTG Tarahan", image: "/images/gardu/placeholder.jpg" },
-    ],
-  },
-  {
-    ulgt: "ULTG TEGINENENG",
-    gardu: [
-      { slug: "natar", title: "Gardu Induk Natar", address: "Jalan Raya Natar, Natar, Lampung Selatan", image: "/images/gardu/natar.jpg" },
-      { slug: "adijaya", title: "Gardu Induk Adijaya", address: "ULTG Tegineneng", image: "/images/gardu/placeholder.jpg" },
-      { slug: "tegineneng", title: "Gardu Induk Tegineneng", address: "ULTG Tegineneng", image: "/images/gardu/placeholder.jpg" },
-      { slug: "sribawono", title: "Gardu Induk Sribawono", address: "ULTG Tegineneng", image: "/images/gardu/placeholder.jpg" },
-      { slug: "metro", title: "Gardu Induk Metro", address: "ULTG Tegineneng", image: "/images/gardu/placeholder.jpg" },
-      { slug: "seputih-banyak", title: "Gardu Induk Seputih Banyak", address: "ULTG Tegineneng", image: "/images/gardu/placeholder.jpg" },
-      { slug: "dente-taladas", title: "Gardu Induk Dente Taladas", address: "ULTG Tegineneng", image: "/images/gardu/placeholder.jpg" },
-      { slug: "dipasena", title: "Gardu Induk Dipasena", address: "ULTG Tegineneng", image: "/images/gardu/placeholder.jpg" },
-      { slug: "langkapura", title: "Gardu Induk Langkapura", address: "Jl. Wan Abdurrahman No.Road, Sumber Agung, Kec. Kemiling", image: "/images/gardu/l.jpg" },
-      { slug: "gitet-lampung-1", title: "GITET Lampung 1", address: "ULTG Tegineneng", image: "/images/gardu/placeholder.jpg" },
-    ],
-  },
-  {
-    ulgt: "ULTG PAGELARAN",
-    gardu: [
-      { slug: "pagelaran", title: "Gardu Induk Pagelaran", address: "ULTG Pagelaran", image: "/images/gardu/placeholder.jpg" },
-      { slug: "batutegi", title: "Switchyard Batutegi", address: "ULTG Pagelaran", image: "/images/gardu/placeholder.jpg" },
-      { slug: "semangka", title: "Switchyard Semangka", address: "ULTG Pagelaran", image: "/images/gardu/placeholder.jpg" },
-      { slug: "ulubelu", title: "Gardu Induk Ulubelu", address: "ULTG Pagelaran", image: "/images/gardu/placeholder.jpg" },
-      { slug: "kota-agung", title: "Gardu Induk Kota Agung", address: "ULTG Pagelaran", image: "/images/gardu/placeholder.jpg" },
-      { slug: "gedong-tataan", title: "Gardu Induk Gedong Tataan", address: "ULTG Pagelaran", image: "/images/gardu/placeholder.jpg" },
-    ],
-  },
-  {
-    ulgt: "ULTG KOTABUMI",
-    gardu: [
-      { slug: "kotabumi", title: "Gardu Induk Kotabumi", address: "ULTG Kotabumi", image: "/images/gardu/placeholder.jpg" },
-      { slug: "menggala", title: "Gardu Induk Menggala", address: "ULTG Kotabumi", image: "/images/gardu/placeholder.jpg" },
-      { slug: "gumawang", title: "Gardu Induk Gumawang", address: "ULTG Kotabumi", image: "/images/gardu/placeholder.jpg" },
-      { slug: "gitet-gumawang", title: "GITET Gumawang", address: "ULTG Kotabumi", image: "/images/gardu/placeholder.jpg" },
-      { slug: "bukit-kemuning", title: "Gardu Induk Bukit Kemuning", address: "ULTG Kotabumi", image: "/images/gardu/placeholder.jpg" },
-      { slug: "besai", title: "Switchyard Besai", address: "ULTG Kotabumi", image: "/images/gardu/placeholder.jpg" },
-      { slug: "liwa", title: "Gardu Induk Liwa", address: "ULTG Kotabumi", image: "/images/gardu/placeholder.jpg" },
-      { slug: "mesuji", title: "Gardu Induk Mesuji", address: "ULTG Kotabumi", image: "/images/gardu/placeholder.jpg" },
-      { slug: "pakuan-ratu", title: "Gardu Induk Pakuan Ratu", address: "ULTG Kotabumi", image: "/images/gardu/placeholder.jpg" },
-      { slug: "mini-traya", title: "Gardu Induk Mini Traya", address: "ULTG Kotabumi", image: "/images/gardu/placeholder.jpg" },
-    ],
-  },
-];
+// Definisikan tipe data untuk satu Gardu Induk dari API
+interface UltgDataItem {
+  id: string;
+  namagi: string;
+  image: string; // URL gambar dari Cloudinary
+  slug: string;
+  alamat: string;
+  googleMapsEmbed: string;
+}
+
+// Definisikan tipe data untuk grup Gardu Induk (ULTG)
+interface GroupedUltgData {
+  ultg: string; // Nama ULTG, contoh: "ULTG TARAHAN"
+  type: string; // Tipe yang digunakan di API, contoh: "tarahan"
+  gardu: UltgDataItem[];
+}
 
 export default function GarduIndukPage() {
+  const [groupedGarduInduk, setGroupedGarduInduk] = useState<GroupedUltgData[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchAllUltgData = async () => {
+      setLoading(true);
+      setError(null);
+      const ultgTypes = [
+        { name: "ULTG TARAHAN", apiType: "tarahan" },
+        { name: "ULTG TEGINENENG", apiType: "tegineneng" },
+        { name: "ULTG PAGELARAN", apiType: "pagelaran" },
+        { name: "ULTG KOTABUMI", apiType: "kotabumi" },
+      ];
+
+      const fetchedData: GroupedUltgData[] = [];
+
+      for (const ultgType of ultgTypes) {
+        try {
+          // Menggunakan process.env.NEXT_PUBLIC_BASE_URL jika ada, default ke localhost
+          const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
+          const response = await fetch(`${baseUrl}/api/ultg?type=${ultgType.apiType}&limit=10000`, {
+            cache: "no-store", // Pastikan data selalu fresh
+          });
+
+          if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(`Gagal mengambil data untuk ${ultgType.name}: ${errorText}`);
+          }
+
+          const data = await response.json();
+          // Periksa struktur data dari API, yang seharusnya memiliki properti 'data'
+          if (data && Array.isArray(data.data)) {
+            fetchedData.push({
+              ultg: ultgType.name,
+              type: ultgType.apiType,
+              gardu: data.data,
+            });
+          } else {
+            console.warn(`Struktur data tidak terduga untuk ${ultgType.name}:`, data);
+            fetchedData.push({
+              ultg: ultgType.name,
+              type: ultgType.apiType,
+              gardu: [], // Tambahkan array kosong jika struktur tidak sesuai
+            });
+          }
+        } catch (err: any) {
+          console.error(`Error fetching data for ${ultgType.name}:`, err);
+          setError((prev) => (prev ? `${prev}; ${err.message}` : err.message));
+          fetchedData.push({
+            ultg: ultgType.name,
+            type: ultgType.apiType,
+            gardu: [], // Tambahkan array kosong jika ada error
+          });
+        }
+      }
+      setGroupedGarduInduk(fetchedData);
+      setLoading(false);
+    };
+
+    fetchAllUltgData();
+  }, []); // Dependency array kosong agar hanya dijalankan sekali saat mount
+
+  if (loading) {
+    return (
+      <MainLayout>
+        <section className="px-4 md:px-8 py-20 bg-gray-50 min-h-screen flex items-center justify-center">
+          <p className="text-xl text-gray-700">Memuat data Gardu Induk...</p>
+        </section>
+      </MainLayout>
+    );
+  }
+
+  if (error) {
+    return (
+      <MainLayout>
+        <section className="px-4 md:px-8 py-20 bg-gray-50 min-h-screen flex items-center justify-center">
+          <p className="text-xl text-red-600">Error memuat data: {error}</p>
+          <p className="text-md text-red-500 mt-2">Pastikan server API berjalan dan terhubung ke database.</p>
+        </section>
+      </MainLayout>
+    );
+  }
+
   return (
     <MainLayout>
       <section className="px-4 md:px-8 py-20 bg-gray-50 min-h-screen">
         <div className="text-center mb-10">
           <h1 className="text-3xl md:text-4xl font-bold text-blue-800">Gardu Induk</h1>
+          <p className="text-lg text-gray-600 mt-2">Informasi Gardu Induk per ULTG</p>
         </div>
 
-        {groupedGarduInduk.map((group) => (
-          <div key={group.ulgt} className="mb-12">
-            <h2 className="text-2xl font-bold text-gray-700 mb-6 border-b pb-2">{group.ulgt}</h2>
-            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {group.gardu.map((gardu) => (
-                <div
-                  key={gardu.slug}
-                  className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition"
-                >
-                  <div className="h-60 w-full relative">
-                    <Image
-                      src={gardu.image}
-                      alt={gardu.title}
-                      fill
-                      className="object-cover"
-                    />
-                  </div>
-                  <div className="p-4">
-                    <h3 className="text-lg font-semibold text-gray-800">{gardu.title}</h3>
-                    <p className="text-sm text-blue-600 mt-1">{gardu.address}</p>
-                    <Link
-                      href={`/gardu-induk/${gardu.slug}`}
-                      className="inline-block mt-4 px-4 py-2 border border-blue-600 text-blue-600 text-sm rounded hover:bg-blue-600 hover:text-white transition"
+        {groupedGarduInduk.length === 0 && !loading && !error ? (
+          <p className="text-center text-gray-600 text-lg">Tidak ada data Gardu Induk yang ditemukan.</p>
+        ) : (
+          groupedGarduInduk.map((group) => (
+            <div key={group.ultg} className="mb-12">
+              <h2 className="text-2xl font-bold text-gray-700 mb-6 border-b pb-2">{group.ultg}</h2>
+              {group.gardu.length === 0 ? (
+                <p className="text-gray-600">Tidak ada gardu induk yang terdaftar untuk {group.ultg}.</p>
+              ) : (
+                <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                  {group.gardu.map((gardu) => (
+                    <div
+                      key={gardu.id} // Menggunakan item.id sebagai key
+                      className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition"
                     >
-                      More Detail
-                    </Link>
-                  </div>
+                      <div className="h-60 w-full relative">
+                        <Image
+                          src={gardu.image}
+                          alt={gardu.namagi} // Menggunakan namagi sebagai alt text
+                          fill
+                          className="object-cover"
+                          onError={(e) => {
+                            e.currentTarget.onerror = null; // Mencegah loop error
+                            e.currentTarget.src = `/images/gardu/placeholder.jpg`; // Fallback ke gambar placeholder lokal
+                          }}
+                        />
+                      </div>
+                      <div className="p-4">
+                        <h3 className="text-lg font-semibold text-gray-800">{gardu.namagi}</h3> {/* Menggunakan namagi */}
+                        <p className="text-sm text-blue-600 mt-1">{gardu.alamat}</p> {/* Menggunakan alamat */}
+                        <Link
+                          // Mengarahkan ke halaman detail yang spesifik berdasarkan tipe dan slug
+                          href={`/gardu-induk/${group.type}/${gardu.slug}`}
+                          className="inline-block mt-4 px-4 py-2 border border-blue-600 text-blue-600 text-sm rounded hover:bg-blue-600 hover:text-white transition"
+                        >
+                          More Detail
+                        </Link>
+                      </div>
+                    </div>
+                  ))}
                 </div>
-              ))}
+              )}
             </div>
-          </div>
-        ))}
+          ))
+        )}
       </section>
     </MainLayout>
   );

@@ -1,7 +1,11 @@
 import React, { forwardRef } from "react";
-import { cn } from "@/src/lib/utils";
+import { cn } from "@/src/lib/utils"; // Pastikan path ke utility 'cn' Anda benar
 
-const Textarea = forwardRef((props, ref) => {
+// --- PERBAIKAN: Menambahkan tipe generik ke forwardRef ---
+const Textarea = forwardRef<
+  HTMLTextAreaElement, // Tipe untuk elemen HTML yang di-render (textarea)
+  React.ComponentPropsWithoutRef<"textarea"> // Tipe untuk semua properti standar HTML textarea
+>((props, ref) => {
   const { className, ...rest } = props;
 
   return (
@@ -11,10 +15,11 @@ const Textarea = forwardRef((props, ref) => {
         className
       )}
       ref={ref}
-      {...rest}
+      {...rest} // Meneruskan semua properti yang tersisa
     />
   );
 });
+// --- AKHIR PERBAIKAN ---
 
 Textarea.displayName = "Textarea";
 
