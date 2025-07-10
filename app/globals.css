@@ -6,7 +6,6 @@
   --primary: #0f172a;
   --secondary: #f1f5f9;
 
-  /* Font Variable dari next/font */
   --font-sans: var(--font-poppins);
   --font-mono: var(--font-geist-mono);
 }
@@ -18,15 +17,6 @@
   --color-secondary: var(--secondary);
   --font-sans: var(--font-poppins);
   --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-    --primary: #0f172a;
-    --secondary: #f1f5f9;
-  }
 }
 
 /* Set font secara global */

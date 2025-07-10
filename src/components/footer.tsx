@@ -31,7 +31,7 @@ const Footer: React.FC = () => {
             </div>
           </div>
           <p className="text-sm text-white/80 max-w-xs">
-            Energi Untuk Kehidupan. Memberikan layanan listrik terbaik untuk wilayah X.
+            Energi Untuk Kehidupan. Memberikan layanan listrik terbaik untuk wilayah Lampung.
           </p>
         </div>
 

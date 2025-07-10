@@ -9,19 +9,19 @@ const garduIndukList = [
     slug: "teluk-betung",
     title: "Gardu Induk Teluk Betung",
     address: "Jalan Basuki Rahmat, Teluk Betung Selatan",
-    image: "/images/gardu/teluk.jpg",
+    image: "/images/gardu/gi-teluk.webp",
   },
   {
     slug: "natar",
     title: "Gardu Induk Natar",
     address: "Jalan Raya Natar, Natar, Lampung Selatan",
-    image: "/images/gardu/natar.jpg",
+    image: "/images/gardu/gi-natar.jpg",
   },
   {
     slug: "langkapura",
     title: "Gardu Induk Langkapura",
     address: "Jl. Wan Abdurrahman No.Road, Sumber Agung, Kec. Kemiling",
-    image: "/images/gardu/l.jpg",
+    image: "/images/gardu/gi-langkapura.jpg",
   },
 ];
 
