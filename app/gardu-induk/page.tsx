@@ -147,7 +147,7 @@ export default function GarduIndukPage() {
                         <p className="text-sm text-blue-600 mt-1">{gardu.alamat}</p> {/* Menggunakan alamat */}
                         <Link
                           // Mengarahkan ke halaman detail yang spesifik berdasarkan tipe dan slug
-                          href={`/gardu-induk/${group.type}/${gardu.slug}`}
+                          href={`/gardu-induk/${gardu.slug}`}
                           className="inline-block mt-4 px-4 py-2 border border-blue-600 text-blue-600 text-sm rounded hover:bg-blue-600 hover:text-white transition"
                         >
                           More Detail

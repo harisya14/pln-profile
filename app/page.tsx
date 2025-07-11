@@ -43,8 +43,8 @@ export default function HomePage() {
     <MainLayout>
       <HeroSection
         title="PLN UPT Tanjung Karang"
-        subtitle="Energi Untuk Kehidupan. Memberikan layanan listrik terbaik untuk wilayah X."
-        ctaText="Hubungi Kami"
+        subtitle="Energi Untuk Kehidupan. Memberikan layanan listrik terbaik untuk wilayah Lampung."
+        ctaText="See More"
         ctaLink="/"
       />
       <ContentSection />

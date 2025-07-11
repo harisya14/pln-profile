@@ -113,7 +113,8 @@ const HeroSection = forwardRef<HTMLElement, HeroSectionProps>(
         ))}
 
         {/* Overlay Content */}
-        <div className="absolute inset-0 bg-black/10 z-10 flex flex-col items-center justify-center text-center px-6">
+        {/* PERUBAHAN: bg-black/10 menjadi bg-black/50 atau bg-black/60 untuk efek gelap yang lebih kuat */}
+        <div className="absolute inset-0 bg-black/50 z-10 flex flex-col items-center justify-center text-center px-6">
           <h2 className="text-4xl lg:text-5xl font-extrabold text-white mb-4 drop-shadow-lg whitespace-pre-line">
             {title}
           </h2>

@@ -93,3 +93,33 @@ model ultgkotabumi {
   alamat           String
   googleMapsEmbed  String
 }
+
+model ManajemenSection {
+  id               String   @id @default(auto()) @map("_id") @db.ObjectId
+  title            String   @unique // Judul bagian manajemen (misal: "Manager UPT", "Divisi Keuangan")
+  anchor           String   @unique // Anchor HTML, juga bisa berfungsi sebagai slug unik
+  orderIndex       Int      @default(0) // Untuk mengurutkan bagian-bagian manajemen di frontend
+
+  // Asisten (opsional), disimpan langsung di sini untuk kesederhanaan
+  assistantName    String?
+  assistantJabatan String?
+  assistantImage   String? // URL gambar asisten dari Cloudinary
+
+  // Relasi ke Persons yang terkait dengan bagian ini
+  persons          Person[]
+}
+
+model Person {
+  id                 String   @id @default(auto()) @map("_id") @db.ObjectId
+  name               String
+  jabatan            String
+  imageUrl           String?  // Opsional, URL gambar orang dari Cloudinary
+  
+  // Relasi ke ManajemenSection
+  sectionId          String   @db.ObjectId
+  section            ManajemenSection @relation(fields: [sectionId], references: [id], onDelete: Cascade) // onDelete: Cascade akan menghapus Person jika Section dihapus
+
+  // Untuk merekonstruksi struktur 'containers' di frontend
+  containerGroup     Int      // Indeks group dalam containers (e.g., containers[0] -> 0, containers[1] -> 1)
+  personIndexInGroup Int      // Indeks orang dalam group tersebut (e.g., containers[0][0] -> 0, containers[0][1] -> 1)
+}

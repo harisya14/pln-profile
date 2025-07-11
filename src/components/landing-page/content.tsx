@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
+import Image from "next/image"; // Menggunakan next/image untuk optimasi
 
 const ContentSection: React.FC = () => {
   const textRef = useRef<HTMLDivElement | null>(null);
@@ -8,6 +9,11 @@ const ContentSection: React.FC = () => {
 
   const [textInView, setTextInView] = useState(false);
   const [imageInView, setImageInView] = useState(false);
+
+  // Path ke gambar Anda di folder public/images
+  const imageUrl1 = "/images/vm1.jpeg"; // GANTI DENGAN NAMA FILE GAMBAR ANDA
+  const imageUrl2 = "/images/visi-misi-2.jpg"; // GANTI DENGAN NAMA FILE GAMBAR ANDA
+  const placeholderImage = "/images/placeholder.jpg"; // Opsional: gambar placeholder jika gambar utama tidak ditemukan
 
   useEffect(() => {
     const textObserver = new IntersectionObserver(
@@ -50,19 +56,17 @@ const ContentSection: React.FC = () => {
           <div className="mb-6">
             <h3 className="text-xl font-semibold mb-2 text-blue-700 dark:text-blue-300">Visi</h3>
             <p>
-              Menjadi perusahaan penyedia layanan ketenagalistrikan yang andal, profesional,
-              dan berdaya saing tinggi untuk mendukung pembangunan nasional berkelanjutan.
+            Menjadi Perusahaan Global Top 500 dan #1 Pilihan Pelanggan untuk Solusi Energi.
             </p>
           </div>
 
           <div>
             <h3 className="text-xl font-semibold mb-2 text-blue-700 dark:text-blue-300">Misi</h3>
             <ul className="list-disc pl-5 space-y-2">
-              <li>Menyediakan infrastruktur listrik yang andal dan efisien.</li>
-              <li>Mengembangkan sumber daya manusia yang kompeten dan berintegritas tinggi.</li>
-              <li>Mendorong inovasi dan penggunaan teknologi ramah lingkungan.</li>
-              <li>Memberikan pelayanan terbaik kepada pelanggan dan masyarakat.</li>
-              <li>Berkomitmen terhadap keselamatan kerja dan keberlanjutan lingkungan.</li>
+              <li>Menjalankan bisnis kelistrikan dan bidang lain yang terkait, berorientasi pada kepuasan pelanggan, anggota perusahaan dan pemegang saham.</li>
+              <li>Menjadikan tenaga listrik sebagai media untuk meningkatkan kualitas kehidupan masyarakat.</li>
+              <li>Mengupayakan agar tenaga listrik menjadi pendorong kegiatan ekonomi.</li>
+              <li>Menjalankan kegiatan usaha yang berwawasan lingkungan.</li>
             </ul>
           </div>
         </div>
@@ -74,16 +78,32 @@ const ContentSection: React.FC = () => {
             imageInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
           }`}
         >
-          <img
-            className="w-full rounded-lg"
-            src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/content/office-long-2.png"
-            alt="kantor pln"
-          />
-          <img
-            className="mt-4 w-full lg:mt-10 rounded-lg"
-            src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/content/office-long-1.png"
-            alt="tim kerja"
-          />
+          <div className="relative w-full h-64 rounded-lg overflow-hidden shadow-md">
+            <Image
+              src={imageUrl1}
+              alt="Visi Misi 1"
+              fill
+              className="object-cover"
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
+              onError={(e) => {
+                e.currentTarget.onerror = null;
+                e.currentTarget.src = placeholderImage; // Fallback ke gambar placeholder
+              }}
+            />
+          </div>
+          <div className="relative w-full h-64 mt-4 lg:mt-10 rounded-lg overflow-hidden shadow-md">
+            <Image
+              src={imageUrl2}
+              alt="Visi Misi 2"
+              fill
+              className="object-cover"
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
+              onError={(e) => {
+                e.currentTarget.onerror = null;
+                e.currentTarget.src = placeholderImage; // Fallback ke gambar placeholder
+              }}
+            />
+          </div>
         </div>
       </div>
     </section>

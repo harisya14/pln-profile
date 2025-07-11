@@ -9,7 +9,8 @@ import {
   Menu,
   X,
   LogOut,
-  Zap, // Import ikon Zap untuk Gardu Induk
+  Zap,
+  User,
 } from "lucide-react";
 import clsx from "clsx";
 import { Button } from "@/src/components/ui/button";
@@ -32,6 +33,12 @@ const navItems = [
     label: "Gardu Induk",
     path: "/dashboard/gardu", // Sesuaikan dengan path halaman daftar gardu induk Anda
     icon: Zap, // Menggunakan ikon Zap
+  },
+
+  {
+    label: "Manajemen",
+    path: "/dashboard/manajemen", // Sesuaikan dengan path halaman daftar gardu induk Anda
+    icon: User, // Menggunakan ikon Zap
   },
   // --- AKHIR ITEM NAVIGASI BARU ---
 ];

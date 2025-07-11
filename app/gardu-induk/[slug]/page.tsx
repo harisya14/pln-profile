@@ -1,101 +1,113 @@
 import { notFound } from "next/navigation";
-import Image from "next/image";
-import MainLayout from "@/src/components/layout";
+// import Image from "next/image"; // Tidak lagi mengimpor Image langsung
+import MainLayout from "@/src/components/layout"; // Pastikan path ini benar
+import Image from 'next/image'
+import Link from "next/link"; // Untuk tombol kembali
+// import ImageWithFallback from "@/src/components/ImageWithFallback"; // Mengimpor komponen baru
 
-// Gabungan semua gardu dari seluruh ULTG
-const garduIndukList = [
-  // Teluk Betung, Natar, Langkapura (yang sudah lengkap datanya)
-  {
-    slug: "teluk-betung",
-    title: "Gardu Induk Teluk Betung",
-    address: "Jalan Basuki Rahmat, Teluk Betung Selatan",
-    image: "/images/gardu/teluk.jpg",
-    description:
-      "Gardu Induk Teluk Betung melayani wilayah selatan Kota Bandar Lampung dan sekitarnya. Gardu ini merupakan titik penting dalam sistem transmisi kelistrikan wilayah pesisir.",
-    mapEmbedUrl:
-      "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15933.13514396129!2d105.2783423!3d-5.4570811!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e40c2c773fae7bb%3A0xa0d84be755720d3!2sTeluk%20Betung%20Selatan%2C%20Bandar%20Lampung!5e0!3m2!1sid!2sid!4v1719406600000",
-  },
-  {
-    slug: "natar",
-    title: "Gardu Induk Natar",
-    address: "Jalan Raya Natar, Natar, Lampung Selatan",
-    image: "/images/gardu/natar.jpg",
-    description:
-      "Terletak di jalur utama penghubung Lampung Selatan, Gardu Induk Natar memegang peranan vital dalam mendistribusikan listrik ke kawasan industri dan pemukiman.",
-    mapEmbedUrl:
-      "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3979.626711832534!2d105.25560701441766!3d-5.289617896162274!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e40c38fcfb021a5%3A0xd679a7ebc607b9de!2sNatar%2C%20Lampung%20Selatan!5e0!3m2!1sid!2sid!4v1719406720000",
-  },
-  {
-    slug: "langkapura",
-    title: "Gardu Induk Langkapura",
-    address: "Jl. Wan Abdurrahman No.Road, Sumber Agung, Kec. Kemiling",
-    image: "/images/gardu/l.jpg",
-    description:
-      "Gardu Induk Langkapura berfungsi sebagai penghubung utama untuk wilayah barat Kota Bandar Lampung, serta mendukung kestabilan suplai listrik daerah perbukitan.",
-    mapEmbedUrl:
-      "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3979.4710614490784!2d105.23310261441823!3d-5.3170163961453965!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e40db12b99d30a9%3A0x42965b2b8b98b8b1!2sSumber%20Agung%2C%20Kemiling%2C%20Bandar%20Lampung%20City!5e0!3m2!1sid!2sid!4v1719406790000",
-  },
+// Definisikan tipe data untuk satu Gardu Induk dari API
+interface UltgDataItem {
+  id: string;
+  namagi: string;
+  image: string; // URL gambar dari Cloudinary
+  slug: string;
+  alamat: string;
+  googleMapsEmbed: string;
+}
 
-  // GI lainnya dari ULTG TEGINENENG, TARAHAN, KOTABUMI, dll (tanpa detail)
-  ...[
-    "sutami", "tarahan", "kalianda", "new-tarahan", "sukarame", "sebalang",
-    "sidomulyo", "jati-agung", "ketapang", "adijaya", "tegineneng", "sribawono",
-    "metro", "seputih-banyak", "dente-taladas", "dipasena", "gitet-lampung-1",
-    "pagelaran", "batutegi", "semangka", "ulubelu", "kota-agung", "gedong-tataan",
-    "kotabumi", "menggala", "gumawang", "gitet-gumawang", "bukit-kemuning",
-    "besai", "liwa", "mesuji", "pakuan-ratu", "mini-traya",
-  ].map((slug) => ({
-    slug,
-    title: `Gardu Induk ${slug.replace(/-/g, " ").replace(/\b\w/g, c => c.toUpperCase())}`,
-    address: "-",
-    image: "/images/gardu/placeholder.jpg",
-    description: "Informasi deskripsi belum tersedia untuk gardu ini.",
-    mapEmbedUrl: "https://maps.google.com",
-  })),
-];
+// Fungsi untuk mengambil data gardu induk tunggal dari API
+async function getUltgDetailBySlug(slug: string): Promise<UltgDataItem | null> {
+  const ultgTypes = ["tarahan", "tegineneng", "pagelaran", "kotabumi"];
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
 
-export default function GarduIndukDetail({ params }: { params: { slug: string } }) {
-  const gardu = garduIndukList.find((g) => g.slug === params.slug);
+  for (const type of ultgTypes) {
+    try {
+      console.log(`Attempting to fetch for type: ${type}, slug: ${slug}`); // Log untuk debugging
+      const res = await fetch(`${baseUrl}/api/ultg?mode=single&type=${type}&slug=${slug}`, {
+        cache: "no-store",
+      });
+
+      if (res.ok) {
+        const contentType = res.headers.get("content-type");
+        if (contentType && contentType.includes("application/json")) {
+          const data: UltgDataItem = await res.json();
+          console.log(`Data found for type ${type}:`, data); // Log data yang ditemukan
+          return data; // Mengembalikan data pertama yang ditemukan
+        } else {
+          const errorBody = await res.text();
+          console.error(`API returned non-JSON response for type ${type}, slug ${slug}. Status: ${res.status}. Body:`, errorBody);
+        }
+      } else {
+        const errorText = await res.text();
+        console.warn(`Gardu Induk dengan slug '${slug}' tidak ditemukan di tipe ${type} (Status: ${res.status}). Response:`, errorText);
+      }
+    } catch (error) {
+      console.error(`Error fetching ULGT detail for type ${type}, slug ${slug}:`, error);
+    }
+  }
+  console.log(`Gardu Induk with slug '${slug}' not found across all types.`); // Log jika tidak ditemukan sama sekali
+  return null;
+}
+
+// Komponen halaman detail Gardu Induk
+export default async function GarduIndukDetailPage({ params }: { params: { slug: string } }) {
+  const { slug } = params;
+
+  const gardu = await getUltgDetailBySlug(slug);
 
   if (!gardu) {
-    return notFound();
+    console.error(`Gardu Induk with slug '${slug}' not found, rendering 404.`);
+    notFound(); // Ini akan memicu halaman 404 Next.js
   }
+
+  // Mendapatkan tipe ULGT dari slug yang ditemukan (jika diperlukan untuk tampilan)
+  // Ini hanya tebakan kasar, tergantung format slug Anda.
+  // Lebih baik jika API mengembalikan properti 'type' juga.
+  const ultgTypeFromData = gardu.slug.split('-')[0];
 
   return (
     <MainLayout>
-      <section className="px-4 md:px-8 py-20 bg-white min-h-screen">
+      <section className="px-4 md:px-8 py-12 md:py-20 bg-white min-h-screen">
         <div className="max-w-4xl mx-auto">
+          {/* Tombol Kembali */}
+          <div className="mb-6">
+            <Link href="/gardu-induk" className="inline-flex items-center text-blue-600 hover:text-blue-800 transition-colors">
+              <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+              Kembali ke Daftar Gardu Induk
+            </Link>
+          </div>
+
           <h1 className="text-3xl md:text-4xl font-bold text-blue-800 mb-6">
-            {gardu.title}
+            {gardu.namagi}
+            <span className="block text-xl text-gray-500 font-normal mt-2">({ultgTypeFromData.toUpperCase()})</span>
           </h1>
 
-          <div className="relative w-full h-80 md:h-[400px] mb-6 rounded overflow-hidden shadow">
-            <Image
+          <div className="relative w-full h-80 md:h-[400px] mb-6 rounded-lg overflow-hidden shadow-lg border border-gray-200">
+            <Image // Menggunakan ImageWithFallback
               src={gardu.image}
-              alt={gardu.title}
+              alt={gardu.namagi}
               fill
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+              priority
               className="object-cover"
+              // onError tidak lagi di sini, ditangani di ImageWithFallback
             />
           </div>
 
           <p className="text-lg text-gray-700 mb-2">
-            <strong>Alamat:</strong> {gardu.address}
+            <strong>Alamat:</strong> {gardu.alamat}
           </p>
 
-          <p className="text-base text-gray-600 mt-4">{gardu.description}</p>
+          <p className="text-base text-gray-600 mt-4">
+            Informasi detail mengenai Gardu Induk {gardu.namagi} akan ditampilkan di sini.
+            Anda dapat menambahkan field deskripsi pada skema Prisma jika diperlukan.
+          </p>
 
           <div className="mt-10">
             <h2 className="text-3xl font-semibold text-blue-800 mb-6">Temukan Kami</h2>
-            <div className="aspect-video w-full rounded shadow overflow-hidden">
-              <iframe
-                src={gardu.mapEmbedUrl}
-                width="100%"
-                height="100%"
-                allowFullScreen
-                loading="lazy"
-                className="border-0 w-full h-full"
-                referrerPolicy="no-referrer-when-downgrade"
-              ></iframe>
+            <div className="aspect-video w-full rounded-lg shadow-lg overflow-hidden border border-gray-200">
+              {/* Pastikan googleMapsEmbed adalah string HTML yang valid */}
+              <div dangerouslySetInnerHTML={{ __html: gardu.googleMapsEmbed }} className="w-full h-full"></div>
             </div>
           </div>
         </div>
