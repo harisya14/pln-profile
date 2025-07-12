@@ -1,4 +1,4 @@
-import { MessageSquareText as KegiatanIcon, Power as GarduIcon } from "lucide-react"; // Import icon Power untuk Gardu Induk
+import { MessageSquareText as KegiatanIcon, Power as GarduIcon, Users as ManajemenIcon } from "lucide-react"; // Import icon Users untuk Manajemen
 import DashboardLayout from "@/src/components/dashboard/dashboard-layout"; // Pastikan path ini benar sesuai struktur proyek Anda
 
 // Fungsi fetch data kegiatan dari API
@@ -13,33 +13,36 @@ async function getKegiatanCount() {
     }
 
     const data = await res.json();
-    return data.articles.length;
+    // Asumsi API kegiatan mengembalikan objek dengan properti 'articles' yang merupakan array
+    if (data && Array.isArray(data.articles)) {
+      return data.articles.length;
+    } else {
+      console.warn("Unexpected data structure for kegiatan API:", data);
+      return 0;
+    }
   } catch (error) {
     console.error("Error fetching kegiatan:", error);
     return 0;
   }
 }
 
-// --- FUNGSI BARU: Mengambil jumlah total Gardu Induk (ULTG) dari semua tipe ---
+// --- FUNGSI UNTUK MENGAMBIL JUMLAH TOTAL GARDU INDUK (ULTG) DARI SEMUA TIPE ---
 async function getUltgCount() {
   const ultgTypes = ["tarahan", "tegineneng", "pagelaran", "kotabumi"];
   let totalUltgCount = 0;
 
   for (const type of ultgTypes) {
     try {
-      // Menggunakan limit yang besar untuk mencoba mengambil semua data dalam satu panggilan
       const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"}/api/ultg?type=${type}&limit=10000`, {
         cache: "no-store", // agar data selalu fresh saat reload
       });
 
       if (!res.ok) {
-        // Log error spesifik untuk tipe ULTG ini tetapi lanjutkan ke tipe berikutnya
         console.error(`Failed to fetch ULTG data for type ${type}:`, await res.text());
-        continue; // Lanjutkan ke tipe berikutnya jika ada error pada satu tipe
+        continue;
       }
 
       const data = await res.json();
-      // Pastikan struktur respons adalah { data: [], next_cursor: null }
       if (data && Array.isArray(data.data)) {
         totalUltgCount += data.data.length;
       } else {
@@ -51,12 +54,42 @@ async function getUltgCount() {
   }
   return totalUltgCount;
 }
-// --- AKHIR FUNGSI BARU ---
+// --- AKHIR FUNGSI ULTG ---
+
+// --- FUNGSI BARU: Mengambil jumlah total Struktur Manajemen ---
+async function getManajemenCount() {
+  try {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"}/api/manajemen?limit=10000`, {
+      cache: "no-store", // agar data selalu fresh saat reload
+    });
+
+    if (!res.ok) {
+      throw new Error("Failed to fetch manajemen data");
+    }
+
+    const data = await res.json(); // 'data' sekarang adalah array langsung
+
+    // **PERBAIKAN DI SINI:** Periksa jika 'data' adalah array langsung dan ambil panjangnya
+    if (Array.isArray(data)) {
+      return data.length; // Langsung mengembalikan panjang array yang diterima
+    } else {
+      // Ini akan tertangkap jika API mengembalikan sesuatu yang bukan array
+      console.warn("Unexpected data structure for manajemen API: Expected an array, but received:", data);
+      return 0;
+    }
+  } catch (error) {
+    console.error("Error fetching manajemen data:", error);
+    return 0;
+  }
+}
+// --- AKHIR FUNGSI MANAJEMEN ---
 
 // Komponen Dashboard
 export default async function DashboardPage() {
+  // Panggil semua fungsi untuk mendapatkan jumlah data dari backend
   const kegiatanCount = await getKegiatanCount();
-  const ultgCount = await getUltgCount(); // Panggil fungsi baru
+  const ultgCount = await getUltgCount();
+  const manajemenCount = await getManajemenCount(); // Panggil fungsi baru untuk manajemen
 
   return (
     <DashboardLayout>
@@ -67,7 +100,7 @@ export default async function DashboardPage() {
         <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-200 hover:shadow-md transition">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg font-semibold text-gray-800">Total Kegiatan</h2>
-            <KegiatanIcon className="w-6 h-6 text-blue-500" /> {/* Ganti warna icon jika perlu */}
+            <KegiatanIcon className="w-6 h-6 text-blue-500" /> {/* Icon untuk Kegiatan */}
           </div>
           <p className="text-3xl font-bold text-gray-900">{kegiatanCount}</p>
           <p className="text-sm text-gray-500 mt-1">
@@ -75,7 +108,7 @@ export default async function DashboardPage() {
           </p>
         </div>
 
-        {/* --- CARD BARU: Untuk Total Gardu Induk --- */}
+        {/* Card untuk Total Gardu Induk */}
         <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-200 hover:shadow-md transition">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg font-semibold text-gray-800">Total Gardu Induk (ULTG)</h2>
@@ -86,8 +119,18 @@ export default async function DashboardPage() {
             Gardu Induk yang terdaftar
           </p>
         </div>
-        {/* --- AKHIR CARD BARU --- */}
 
+        {/* Card untuk Total Struktur Manajemen */}
+        <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-200 hover:shadow-md transition">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-lg font-semibold text-gray-800">Total Struktur Manajemen</h2>
+            <ManajemenIcon className="w-6 h-6 text-purple-500" /> {/* Icon untuk Manajemen */}
+          </div>
+          <p className="text-3xl font-bold text-gray-900">{manajemenCount}</p>
+          <p className="text-sm text-gray-500 mt-1">
+            Struktur manajemen yang terdaftar
+          </p>
+        </div>
       </div>
     </DashboardLayout>
   );

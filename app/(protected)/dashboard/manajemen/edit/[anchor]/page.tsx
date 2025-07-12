@@ -148,7 +148,7 @@ export default function EditManajemenPage() {
         };
       } else if (target === "person" && groupIndex !== undefined && personIndex !== undefined) {
         const newContainers = [...prev.containers];
-        if (newContainers[groupIndex] && newContainers[groupIndex][personIndex]) {
+        if (newContainers[groupIndex]) {
           newContainers[groupIndex][personIndex] = {
             ...newContainers[groupIndex][personIndex],
             imageUrl: null,
@@ -415,7 +415,12 @@ export default function EditManajemenPage() {
             {/* Bagian Daftar Anggota (Containers) */}
             <div className="space-y-6">
               <h2 className="text-lg font-semibold text-gray-700">Daftar Anggota</h2>
-              <Button type="button" onClick={handleAddGroup} className="flex items-center gap-2">
+              {/* PERUBAHAN DI SINI: Tombol "Tambah Grup Anggota" */}
+              <Button
+                type="button"
+                onClick={handleAddGroup}
+                className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white" // Menggunakan warna biru
+              >
                 <Plus className="w-4 h-4" /> Tambah Grup Anggota
               </Button>
 
@@ -487,7 +492,12 @@ export default function EditManajemenPage() {
                       </div>
                     </div>
                   ))}
-                  <Button type="button" variant="outline" size="sm" onClick={() => handleAddPerson(groupIndex)} className="w-full flex items-center gap-2 mt-4">
+                  {/* PERUBAHAN DI SINI: Tombol "Tambah Anggota ke Grup Ini" */}
+                  <Button
+                    type="button"
+                    className="w-full flex items-center gap-2 mt-4 bg-blue-600 hover:bg-blue-700 text-white"
+                    onClick={() => handleAddPerson(groupIndex)}
+                  >
                     <Plus className="w-4 h-4" /> Tambah Anggota ke Grup Ini
                   </Button>
                 </div>

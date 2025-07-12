@@ -12,7 +12,7 @@ const ContentSection: React.FC = () => {
 
   // Path ke gambar Anda di folder public/images
   const imageUrl1 = "/images/vm1.jpeg"; // GANTI DENGAN NAMA FILE GAMBAR ANDA
-  const imageUrl2 = "/images/visi-misi-2.jpg"; // GANTI DENGAN NAMA FILE GAMBAR ANDA
+  const imageUrl2 = "/images/vm2.jpg"; // GANTI DENGAN NAMA FILE GAMBAR ANDA
   const placeholderImage = "/images/placeholder.jpg"; // Opsional: gambar placeholder jika gambar utama tidak ditemukan
 
   useEffect(() => {
@@ -78,7 +78,7 @@ const ContentSection: React.FC = () => {
             imageInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
           }`}
         >
-          <div className="relative w-full h-64 rounded-lg overflow-hidden shadow-md">
+          <div className="relative w-full h-100 rounded-lg overflow-hidden shadow-md">
             <Image
               src={imageUrl1}
               alt="Visi Misi 1"
@@ -91,7 +91,7 @@ const ContentSection: React.FC = () => {
               }}
             />
           </div>
-          <div className="relative w-full h-64 mt-4 lg:mt-10 rounded-lg overflow-hidden shadow-md">
+          <div className="relative w-full h-100 mt-4 lg:mt-10 rounded-lg overflow-hidden shadow-md">
             <Image
               src={imageUrl2}
               alt="Visi Misi 2"

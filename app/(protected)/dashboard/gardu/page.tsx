@@ -1,8 +1,9 @@
+// src/app/(protected)/dashboard/gardu/page.tsx (Lokasi asli Anda mungkin src/app/dashboard/gardu/page.tsx)
 "use client";
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import Image from "next/image"; // Menggunakan next/image untuk optimasi
+import Image from "next/image";
 import {
   Table,
   TableHeader,
@@ -24,10 +25,10 @@ import {
 } from "@/src/components/ui/alert-dialog";
 import { Button } from "@/src/components/ui/button";
 import { Pencil, Trash2, Plus, X } from "lucide-react";
-import { toast } from "@/src/hooks/useToast"; // Asumsi ini adalah hook toast Anda
-import DashboardLayout from "@/src/components/dashboard/dashboard-layout"; // Pastikan path ini benar
+import { toast } from "@/src/hooks/useToast";
+import DashboardLayout from "@/src/components/dashboard/dashboard-layout";
 
-// Definisikan tipe data untuk ultg
+// Definisikan tipe data untuk item gardu induk
 interface UltgData {
   id: string;
   namagi: string;
@@ -35,8 +36,7 @@ interface UltgData {
   slug: string;
   alamat: string;
   googleMapsEmbed: string;
-  // createdAt?: string; // Tidak ada di skema ultg Anda, jadi dihapus
-  // updatedAt?: string; // Tidak ada di skema ultg Anda, jadi dihapus
+  type: string; // Pastikan properti ini ada di data yang diterima dari API Anda
 }
 
 const ITEMS_PER_PAGE = 5;
@@ -46,22 +46,29 @@ export default function ListGardu() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [page, setPage] = useState(1);
-  const [deletingItem, setDeletingItem] = useState<{ slug: string; type: string } | null>(null); // Menyimpan slug dan type untuk dihapus
+  const [deletingItem, setDeletingItem] = useState<{ slug: string; type: string } | null>(null);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
-  const [selectedType, setSelectedType] = useState<string>("tarahan"); // State untuk memilih tipe ultg
+  const [selectedType, setSelectedType] = useState<string>("tarahan"); // Default type
 
-  // Fungsi untuk mengambil data ultg berdasarkan tipe yang dipilih
+  // Fungsi untuk mengambil data gardu induk berdasarkan tipe
   const fetchUltgData = async (type: string) => {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch(`/api/ultg?type=${type}&limit=100`); // Sesuaikan limit jika perlu
+      // Mengambil data dari API dengan parameter 'type'
+      const res = await fetch(`/api/ultg?type=${type}&limit=100`);
       if (!res.ok) {
         const errorData = await res.json();
         throw new Error(errorData.error || "Gagal memuat data gardu induk.");
       }
       const data = await res.json();
-      setUltgList(data.data || []); // API /api/ultg mengembalikan data dalam properti 'data'
+      
+      // Penting: Memastikan setiap item memiliki properti 'type'
+      // Jika API Anda tidak mengembalikan 'type' di setiap item GI, 
+      // Anda perlu menambahkannya secara manual di sini.
+      const itemsWithType = (data.data || []).map((item: UltgData) => ({ ...item, type: type }));
+      setUltgList(itemsWithType);
+
     } catch (err: any) {
       console.error("Error fetching ultg data:", err);
       setError(err.message);
@@ -70,18 +77,18 @@ export default function ListGardu() {
     }
   };
 
-  // Panggil fetch data saat komponen dimuat atau saat selectedType berubah
+  // Effect untuk memuat data saat tipe yang dipilih berubah
   useEffect(() => {
     setPage(1); // Reset halaman ke 1 setiap kali tipe berubah
     fetchUltgData(selectedType);
   }, [selectedType]);
 
-  // Fungsi untuk menangani penghapusan data ultg
+  // Handler untuk proses penghapusan data
   const handleDelete = async () => {
     if (!deletingItem) return;
 
     const { slug, type } = deletingItem;
-    setLoading(true); // Set loading saat operasi delete berlangsung
+    setLoading(true);
 
     try {
       const res = await fetch(`/api/ultg?type=${type}&slug=${slug}`, {
@@ -93,13 +100,17 @@ export default function ListGardu() {
           title: "Sukses",
           description: "Anda berhasil menghapus data gardu induk.",
         });
-        // Perbarui state secara lokal setelah penghapusan berhasil
-        setUltgList((prev) => prev.filter((item) => item.slug !== slug || selectedType !== type));
-        // Jika halaman saat ini kosong setelah penghapusan, kembali ke halaman sebelumnya
-        if (paginated.length === 1 && page > 1) {
-            setPage(prev => prev - 1);
+        // Filter data yang dihapus dari state lokal (pastikan slug dan type cocok)
+        setUltgList((prev) => prev.filter((item) => !(item.slug === slug && item.type === type))); 
+        
+        // Opsional: Sesuaikan halaman setelah penghapusan item terakhir di halaman
+        const newPaginatedList = ultgList.filter((item) => !(item.slug === slug && item.type === type)).slice(startIndex, startIndex + ITEMS_PER_PAGE);
+        if (newPaginatedList.length === 0 && page > 1) {
+          setPage((prev) => prev - 1);
         }
-        fetchUltgData(selectedType); // Refresh data untuk memastikan konsistensi
+        
+        // Fetch ulang data untuk memastikan daftar selalu terbaru dari database
+        fetchUltgData(selectedType);
       } else {
         const errorData = await res.json();
         toast({
@@ -116,11 +127,12 @@ export default function ListGardu() {
         variant: "destructive",
       });
     } finally {
-      setDeletingItem(null); // Reset state deletingItem
-      setLoading(false); // Matikan loading
+      setDeletingItem(null);
+      setLoading(false);
     }
   };
 
+  // Logika paginasi
   const startIndex = (page - 1) * ITEMS_PER_PAGE;
   const paginated = ultgList.slice(startIndex, startIndex + ITEMS_PER_PAGE);
   const totalPages = Math.ceil(ultgList.length / ITEMS_PER_PAGE);
@@ -133,8 +145,7 @@ export default function ListGardu() {
             Manage Gardu Induk
           </h1>
           <div className="flex items-center gap-4">
-            {/* Dropdown untuk memilih tipe ultg */}
-            <label htmlFor="ultgType" className="sr-only">Pilih Tipe Gardu Induk</label>
+            {/* Dropdown untuk memilih tipe Gardu Induk */}
             <select
               id="ultgType"
               className="p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -147,6 +158,7 @@ export default function ListGardu() {
               <option value="kotabumi">ultg Kotabumi</option>
             </select>
 
+            {/* Tombol Tambah Gardu Induk Baru */}
             <Button asChild variant="outline" size="sm">
               <Link href={`/dashboard/gardu/create?type=${selectedType}`} className="flex items-center gap-2">
                 <Plus className="w-4 h-4" />
@@ -164,7 +176,7 @@ export default function ListGardu() {
             <div className="overflow-x-auto rounded-lg shadow bg-white">
               <Table>
                 <TableHeader>
-                  <TableRow>
+                  <TableRow className="align-middle">
                     <TableHead className="w-12 text-center">No</TableHead>
                     <TableHead>Nama GI</TableHead>
                     <TableHead>Gambar</TableHead>
@@ -182,9 +194,9 @@ export default function ListGardu() {
                     </TableRow>
                   ) : (
                     paginated.map((item, i) => (
-                      <TableRow key={item.id}> {/* Menggunakan item.id sebagai key */}
+                      <TableRow key={item.id} className="align-middle">
                         <TableCell className="text-center">{startIndex + i + 1}</TableCell>
-                        <TableCell className="w-48 max-w-xs break-words whitespace-normal h-12">{item.namagi}</TableCell>
+                        <TableCell>{item.namagi}</TableCell>
                         <TableCell>
                           <img
                             src={item.image}
@@ -197,58 +209,62 @@ export default function ListGardu() {
                             }}
                           />
                         </TableCell>
-                        <TableCell
-                          className="w-64 max-w-xs break-words whitespace-normal line-clamp-2 h-12"
-                        >
+                        <TableCell className="max-w-xs break-words whitespace-normal line-clamp-2 h-12">
                           {item.alamat}
                         </TableCell>
-                        <TableCell className="w-64 max-w-xs break-words whitespace-normal line-clamp-2 h-12">
-                          {/* Menampilkan embed maps dengan aman */}
+                        <TableCell className="align-middle">
                           <div
+                            className="w-30 h-18 overflow-hidden rounded-md border border-gray-200"
                             dangerouslySetInnerHTML={{ __html: item.googleMapsEmbed }}
-                            className="w-24 h-16 overflow-hidden rounded-md border border-gray-200"
                           />
                         </TableCell>
-                        <TableCell className="text-center space-x-3">
-                          <Button asChild variant="outline" size="sm">
-                            <Link href={`/dashboard/gardu/edit/${selectedType}/${item.slug}`}>
-                              <Pencil className="w-4 h-4 mr-1" />
-                              Edit
-                            </Link>
-                          </Button>
 
-                          <AlertDialog>
-                            <AlertDialogTrigger asChild>
-                              <Button
-                                variant="destructive"
-                                size="sm"
-                                // Menggunakan deletingItem untuk membandingkan
-                                disabled={deletingItem?.slug === item.slug && deletingItem?.type === selectedType}
-                                className="bg-red-600 hover:bg-red-700"
-                                onClick={() => setDeletingItem({ slug: item.slug, type: selectedType })} // Set item yang akan dihapus
-                              >
-                                <Trash2 className="w-4 h-4 mr-1" />
-                                {deletingItem?.slug === item.slug && deletingItem?.type === selectedType ? "Menghapus..." : "Hapus"}
-                              </Button>
-                            </AlertDialogTrigger>
-                            <AlertDialogContent>
-                              <AlertDialogHeader>
-                                <AlertDialogTitle>Yakin ingin menghapus?</AlertDialogTitle>
-                                <AlertDialogDescription>
-                                  Gardu Induk <strong>{item.namagi}</strong> dari tipe <strong>{selectedType}</strong> akan dihapus secara permanen.
-                                </AlertDialogDescription>
-                              </AlertDialogHeader>
-                              <AlertDialogFooter>
-                                <AlertDialogCancel onClick={() => setDeletingItem(null)}>Batal</AlertDialogCancel>
-                                <AlertDialogAction
-                                  className="bg-red-600 text-white hover:bg-red-700"
-                                  onClick={handleDelete} // Panggil handleDelete tanpa argumen karena state sudah diset
+                        <TableCell className="align-middle">
+                          <div className="flex items-center gap-2">
+                            {/* Tombol Edit - Menggunakan PATH PARAMETERS */}
+                            <Button asChild variant="outline" size="sm">
+                              {/* PASTIkan Anda menggunakan item.type dan item.slug di path */}
+                              <Link href={`/dashboard/gardu/edit/${item.type}/${item.slug}`}>
+                                <Pencil className="w-4 h-4 mr-1" />
+                                Edit
+                              </Link>
+                            </Button>
+
+                            {/* AlertDialog untuk konfirmasi hapus */}
+                            <AlertDialog>
+                              <AlertDialogTrigger asChild>
+                                <Button
+                                  variant="destructive"
+                                  size="sm"
+                                  disabled={deletingItem?.slug === item.slug && deletingItem?.type === selectedType}
+                                  className="bg-red-600 hover:bg-red-700"
+                                  onClick={() => setDeletingItem({ slug: item.slug, type: selectedType })}
                                 >
-                                  Ya, hapus
-                                </AlertDialogAction>
-                              </AlertDialogFooter>
-                            </AlertDialogContent>
-                          </AlertDialog>
+                                  <Trash2 className="w-4 h-4 mr-1" />
+                                  {deletingItem?.slug === item.slug && deletingItem?.type === selectedType
+                                    ? "Menghapus..."
+                                    : "Hapus"}
+                                </Button>
+                              </AlertDialogTrigger>
+                              <AlertDialogContent>
+                                <AlertDialogHeader>
+                                  <AlertDialogTitle>Yakin ingin menghapus?</AlertDialogTitle>
+                                  <AlertDialogDescription>
+                                    Gardu Induk <strong>{item.namagi}</strong> dari tipe <strong>{selectedType}</strong> akan dihapus secara permanen.
+                                  </AlertDialogDescription>
+                                </AlertDialogHeader>
+                                <AlertDialogFooter>
+                                  <AlertDialogCancel onClick={() => setDeletingItem(null)}>Batal</AlertDialogCancel>
+                                  <AlertDialogAction
+                                    className="bg-red-600 text-white hover:bg-red-700"
+                                    onClick={handleDelete}
+                                  >
+                                    Ya, hapus
+                                  </AlertDialogAction>
+                                </AlertDialogFooter>
+                              </AlertDialogContent>
+                            </AlertDialog>
+                          </div>
                         </TableCell>
                       </TableRow>
                     ))
@@ -257,6 +273,7 @@ export default function ListGardu() {
               </Table>
             </div>
 
+            {/* Kontrol Paginasi */}
             <div className="flex flex-col sm:flex-row justify-between items-center mt-6 gap-4">
               <p className="text-sm text-muted-foreground">
                 Halaman {page} dari {totalPages}
@@ -303,10 +320,10 @@ export default function ListGardu() {
               <Image
                 src={selectedImage}
                 alt="Pratinjau Gambar"
-                width={800} // Sesuaikan dengan ukuran yang wajar
-                height={600} // Sesuaikan dengan ukuran yang wajar
+                width={800}
+                height={600}
                 className="rounded-lg object-contain max-h-[80vh] w-full h-auto"
-                priority // Memuat gambar lebih awal
+                priority
                 onError={(e) => {
                   e.currentTarget.onerror = null;
                   e.currentTarget.src = `https://placehold.co/800x600/cccccc/333333?text=Gambar+Tidak+Dapat+Dimuat`;

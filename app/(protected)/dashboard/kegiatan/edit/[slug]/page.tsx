@@ -43,7 +43,6 @@ export default function EditKegiatanPage() {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-
   useEffect(() => {
     async function fetchArticle() {
       try {
@@ -183,7 +182,7 @@ export default function EditKegiatanPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitting(true);
-    setError(null); // ⬅️ Reset error sebelum submit
+    setError(null); // Reset error sebelum submit
 
     try {
       const res = await fetch(`/api/kegiatan?slug=${slug}`, {
@@ -208,7 +207,7 @@ export default function EditKegiatanPage() {
       router.refresh();
     } catch (err) {
       const message = err instanceof Error ? err.message : "Unknown error";
-      setError(message); // ⬅️ Set error state
+      setError(message); // Set error state
       toast({
         title: "Update Failed",
         description: message,
@@ -218,7 +217,6 @@ export default function EditKegiatanPage() {
       setSubmitting(false);
     }
   };
-
 
   if (loading) {
     return <DashboardLayout>Loading...</DashboardLayout>;
@@ -365,7 +363,12 @@ export default function EditKegiatanPage() {
           </div>
 
           {/* Submit Button */}
-          <Button type="submit" disabled={submitting} className="w-full">
+          {/* PERUBAHAN DI SINI: Menambahkan kelas Tailwind CSS untuk warna latar belakang dan teks */}
+          <Button
+            type="submit"
+            disabled={submitting}
+            className="w-full bg-blue-600 text-white hover:bg-blue-700" // Contoh: Latar belakang biru, teks putih
+          >
             {submitting ? "Updating..." : "Update Kegiatan"}
           </Button>
         </form>
