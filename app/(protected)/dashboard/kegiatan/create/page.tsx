@@ -334,7 +334,7 @@ export default function CreateKegiatan() {
           </div>
 
           {/* Submit Button */}
-          <Button type="submit" disabled={submitting} className="w-full">
+          <Button type="submit" disabled={submitting} className="w-full text-white  bg-blue-600 hover:bg-blue-700">
             {submitting ? "Submitting..." : "Submit Kegiatan"}
           </Button>
         </form>

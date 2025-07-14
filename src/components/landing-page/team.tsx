@@ -63,9 +63,9 @@ const DivisionSection: React.FC = () => {
           >
             <User2 className="mx-auto mb-3 text-blue-600" size={40} />
             <h3 className="text-xl font-semibold text-blue-800">
-              Fathurrahman
+              Manager
             </h3>
-            <p className="text-gray-600 text-sm">Manager UPT Tanjung Karang</p>
+            <p className="text-gray-600 text-sm">UPT Tanjung Karang</p>
           </a>
         </div>
 

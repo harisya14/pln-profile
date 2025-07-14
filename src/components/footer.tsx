@@ -8,6 +8,7 @@ import {
   Instagram,
   Linkedin,
   Github,
+  Youtube,
 } from "lucide-react";
 import React from "react";
 
@@ -41,7 +42,7 @@ const Footer: React.FC = () => {
           <ul className="space-y-3 text-sm text-white/80">
             <li className="flex items-start gap-2">
               <Mail className="w-4 h-4 mt-0.5 shrink-0" />
-              info@plnupttkr.co.id
+              pln123@pln.co.id
             </li>
             <li className="flex items-start gap-2">
               <Phone className="w-4 h-4 mt-0.5 shrink-0" />
@@ -58,14 +59,11 @@ const Footer: React.FC = () => {
         <div className="flex-1">
           <h4 className="text-md font-semibold mb-4 text-white/90">Link Cepat</h4>
           <div className="flex space-x-4 text-white/80 text-lg">
-            <Link href="https://github.com/caseinn" target="_blank" aria-label="GitHub">
-              <Github className="w-5 h-5 hover:text-white transition-colors duration-200" />
+            <Link href="https://www.youtube.com/@plnupttanjungkarang1908" target="_blank" aria-label="GitHub">
+              <Youtube className="w- h-6 hover:text-white transition-colors duration-200" />
             </Link>
-            <Link href="https://instagram.com/ditorifkii" target="_blank" aria-label="Instagram">
+            <Link href="https://www.instagram.com/upt_tanjung_karang" target="_blank" aria-label="Instagram">
               <Instagram className="w-5 h-5 hover:text-white transition-colors duration-200" />
-            </Link>
-            <Link href="https://linkedin.com/in/ditorifkiirawan" target="_blank" aria-label="LinkedIn">
-              <Linkedin className="w-5 h-5 hover:text-white transition-colors duration-200" />
             </Link>
           </div>
         </div>

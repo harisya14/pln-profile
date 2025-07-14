@@ -1,28 +1,28 @@
-"use client"; // Menandakan ini sebagai Client Component
+"use client";
 
 import React, { useState, useEffect } from "react";
 import MainLayout from "@/src/components/layout"; // Pastikan path ini benar
-import Image from "next/image"; // Digunakan untuk gambar person jika ada
+import Image from "next/image";
 
-// Definisikan tipe data untuk Person
+// Tipe data untuk satu orang dalam struktur
 interface Person {
   name: string;
   jabatan: string | null;
-  imageUrl?: string | null; // URL gambar dari Cloudinary
+  imageUrl?: string | null;
 }
 
-// Definisikan tipe data untuk satu bagian Manajemen (sesuai respons API)
+// Tipe data untuk satu seksi/divisi manajemen
 interface ManajemenSectionData {
-  id: string; // ID dari Prisma
+  id: string;
   title: string;
-  anchor: string;
+  anchor: string; // Kunci untuk anchor link (contoh: "keuangan-dan-umum")
   orderIndex: number;
   assistant: {
     name: string;
     jabatan: string;
-    image?: string | null; // URL gambar asisten
+    image?: string | null;
   } | null;
-  containers: Person[][]; // Array of arrays of Person
+  containers: Person[][];
 }
 
 export default function ManajemenPage() {
@@ -37,16 +37,30 @@ export default function ManajemenPage() {
       try {
         const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
         const response = await fetch(`${baseUrl}/api/manajemen`, {
-          cache: "no-store", // Pastikan data selalu fresh
+          cache: "no-store", // Selalu ambil data terbaru
         });
 
         if (!response.ok) {
           const errorText = await response.text();
-          throw new Error(`Gagal mengambil data struktur manajemen: ${errorText}`);
+          throw new Error(`Gagal mengambil data: ${errorText}`);
         }
 
         const data: ManajemenSectionData[] = await response.json();
         setStrukturManajemen(data);
+
+        // --- Logika untuk scroll ke anchor ---
+        // Dijalankan setelah data berhasil di-set
+        const hash = window.location.hash.substring(1);
+        if (hash) {
+          setTimeout(() => {
+            const element = document.getElementById(hash);
+            if (element) {
+              element.scrollIntoView({ behavior: "smooth", block: "start" });
+            }
+          }, 100); // Beri jeda 100ms agar DOM sempat ter-update
+        }
+        // --- Akhir dari logika scroll ---
+
       } catch (err: any) {
         console.error("Error fetching manajemen structure:", err);
         setError(err.message);
@@ -56,12 +70,12 @@ export default function ManajemenPage() {
     };
 
     fetchManajemenData();
-  }, []); // Dependency array kosong agar hanya dijalankan sekali saat mount
+  }, []); // Dependency array kosong agar hanya dijalankan sekali saat komponen mount
 
   if (loading) {
     return (
       <MainLayout>
-        <section className="px-4 md:px-8 py-20 bg-gray-50 min-h-screen flex items-center justify-center">
+        <section className="flex min-h-screen items-center justify-center bg-gray-50 px-4 py-20 md:px-8">
           <p className="text-xl text-gray-700">Memuat struktur manajemen...</p>
         </section>
       </MainLayout>
@@ -71,9 +85,8 @@ export default function ManajemenPage() {
   if (error) {
     return (
       <MainLayout>
-        <section className="px-4 md:px-8 py-20 bg-gray-50 min-h-screen flex items-center justify-center">
-          <p className="text-xl text-red-600">Error memuat struktur manajemen: {error}</p>
-          <p className="text-md text-red-500 mt-2">Pastikan server API berjalan dan terhubung ke database.</p>
+        <section className="flex min-h-screen items-center justify-center bg-gray-50 px-4 py-20 md:px-8">
+          <p className="text-xl text-red-600">Error: {error}</p>
         </section>
       </MainLayout>
     );
@@ -81,48 +94,41 @@ export default function ManajemenPage() {
 
   return (
     <MainLayout>
-      <section className="px-4 md:px-8 py-20 bg-gray-50 min-h-screen">
-        <div className="max-w-6xl mx-auto">
-          {/* Judul Halaman */}
-          <h2 className="text-3xl md:text-4xl font-bold text-center text-blue-800 mb-16">
+      <section className="min-h-screen bg-gray-50 px-4 py-20 md:px-8">
+        <div className="mx-auto max-w-6xl">
+          <h2 className="mt-16 mb-16 text-center text-3xl font-bold text-blue-800 md:text-4xl">
             Struktur Manajemen
           </h2>
 
-          {strukturManajemen.length === 0 && !loading && !error ? (
-            <p className="text-center text-gray-600 text-lg">Tidak ada data struktur manajemen yang ditemukan.</p>
+          {strukturManajemen.length === 0 ? (
+            <p className="text-center text-lg text-gray-600">
+              Tidak ada data struktur manajemen yang ditemukan.
+            </p>
           ) : (
-            /* Loop Setiap Divisi */
             <div className="space-y-24">
-              {strukturManajemen.map((divisi) => ( // Menggunakan divisi.id sebagai key jika ada, atau divisi.anchor
-                <div key={divisi.id || divisi.anchor} id={divisi.anchor} className="scroll-mt-28">
-                  {/* Judul Divisi */}
-                  <h3 className="text-2xl font-semibold text-center text-blue-700 mb-10 uppercase tracking-wide">
+              {strukturManajemen.map((divisi) => (
+                <div key={divisi.id} id={divisi.anchor} className="scroll-mt-28">
+                  <h3 className="mb-10 text-center text-2xl font-semibold uppercase tracking-wide text-blue-700">
                     {divisi.title}
                   </h3>
 
                   {/* Asisten Manager */}
                   {divisi.assistant && (
-                    <div className="flex justify-center mb-8">
-                      <div className="rounded-xl px-6 py-4 w-full max-w-xs bg-white shadow-md ring-1 ring-gray-200 hover:shadow-lg transition duration-300">
-                        {divisi.assistant.image && (
-                          <div className="relative w-24 h-24 mx-auto mb-3 rounded-full overflow-hidden border-2 border-blue-300">
-                            <Image
-                              src={divisi.assistant.image}
-                              alt={divisi.assistant.name}
-                              fill
-                              className="object-cover"
-                              sizes="96px" // Ukuran gambar untuk optimasi
-                              onError={(e) => {
-                                e.currentTarget.onerror = null;
-                                e.currentTarget.src = `/images/placeholder-person.png`; // Fallback gambar default
-                              }}
-                            />
-                          </div>
-                        )}
-                        <p className="font-semibold text-gray-900 text-center">
+                    <div className="mb-8 flex justify-center">
+                      <div className="w-full max-w-xs rounded-xl bg-white px-6 py-4 shadow-md ring-1 ring-gray-200 transition duration-300 hover:shadow-lg">
+                        <div className="relative mx-auto mb-3 h-24 w-24 overflow-hidden rounded-full border-2 border-blue-300">
+                          <Image
+                            src={divisi.assistant.image || '/images/placeholder-person.png'}
+                            alt={divisi.assistant.name}
+                            fill
+                            className="object-cover"
+                            sizes="96px"
+                          />
+                        </div>
+                        <p className="text-center font-semibold text-gray-900">
                           {divisi.assistant.name}
                         </p>
-                        <p className="text-sm text-gray-600 text-center">
+                        <p className="text-center text-sm text-gray-600">
                           {divisi.assistant.jabatan}
                         </p>
                       </div>
@@ -132,32 +138,26 @@ export default function ManajemenPage() {
                   {/* Daftar Anggota */}
                   <div className="flex flex-wrap justify-center gap-6">
                     {divisi.containers.map((group, colIndex) => (
-                      <div key={colIndex} className="flex flex-col gap-6 w-full sm:w-auto">
+                      <div key={colIndex} className="flex w-full flex-col gap-6 sm:w-auto">
                         {group.map((person, personIndex) => (
                           <div
-                            key={personIndex} // Menggunakan personIndex karena tidak ada ID unik untuk setiap person di frontend
-                            className="rounded-xl px-6 py-4 w-full sm:w-64 bg-white shadow-sm ring-1 ring-gray-200 hover:shadow-md transition duration-300"
+                            key={personIndex}
+                            className="w-full rounded-xl bg-white px-6 py-4 shadow-sm ring-1 ring-gray-200 transition duration-300 hover:shadow-md sm:w-64"
                           >
-                            {person.imageUrl && (
-                              <div className="relative w-20 h-20 mx-auto mb-2 rounded-full overflow-hidden border-2 border-gray-300">
-                                <Image
-                                  src={person.imageUrl}
-                                  alt={person.name}
-                                  fill
-                                  className="object-cover"
-                                  sizes="80px" // Ukuran gambar untuk optimasi
-                                  onError={(e) => {
-                                    e.currentTarget.onerror = null;
-                                    e.currentTarget.src = `/images/placeholder-person.png`; // Fallback gambar default
-                                  }}
-                                />
-                              </div>
-                            )}
-                            <p className="font-semibold text-gray-900 text-center">
+                            <div className="relative mx-auto mb-2 h-20 w-20 overflow-hidden rounded-full border-2 border-gray-300">
+                              <Image
+                                src={person.imageUrl || '/images/placeholder-person.png'}
+                                alt={person.name}
+                                fill
+                                className="object-cover"
+                                sizes="80px"
+                              />
+                            </div>
+                            <p className="text-center font-semibold text-gray-900">
                               {person.name || "-"}
                             </p>
                             {person.jabatan && (
-                              <p className="text-sm text-gray-600 text-center">
+                              <p className="text-center text-sm text-gray-600">
                                 {person.jabatan}
                               </p>
                             )}

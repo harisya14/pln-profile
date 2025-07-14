@@ -21,7 +21,8 @@ const ARTICLES_PER_PAGE = 12
 
 export default function ArticlesPage() {
   const [articles, setArticles] = useState<Article[]>([])
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(true) 
+  const [filteredArticles, setFilteredArticles] = useState<Article[]>([])
 
   const searchParams = useSearchParams()
   const pageParam = searchParams.get("page")
@@ -29,17 +30,31 @@ export default function ArticlesPage() {
   let currentPage = parseInt(pageParam || "1", 10)
   if (isNaN(currentPage) || currentPage < 1) currentPage = 1
 
-  // Fetch data
   useEffect(() => {
     async function fetchArticles() {
       setLoading(true)
-      const res = await fetch(`/api/kegiatan?limit=${ARTICLES_PER_PAGE}&mode=list`)
+      const res = await fetch(`/api/kegiatan?mode=list`)
       const data = await res.json()
       setArticles(data.articles)
       setLoading(false)
     }
     fetchArticles()
-  }, [currentPage, searchParam])
+  }, []) 
+
+
+  useEffect(() => {
+    const results = articles.filter(article =>
+      article.title.toLowerCase().includes(searchParam)
+    )
+    setFilteredArticles(results)
+  }, [searchParam, articles])
+
+  const paginatedArticles = filteredArticles.slice(
+    (currentPage - 1) * ARTICLES_PER_PAGE,
+    currentPage * ARTICLES_PER_PAGE
+  )
+
+  const totalPages = Math.ceil(filteredArticles.length / ARTICLES_PER_PAGE)
 
   return (
     <MainLayout>
@@ -60,16 +75,24 @@ export default function ArticlesPage() {
             ? [...Array(ARTICLES_PER_PAGE)].map((_, i) => (
                 <ArticleCardSkeleton key={i} />
               ))
-            : articles.map((article) => (
+            : paginatedArticles.map((article) => (
                 <ArticleCard key={article.slug} {...article} />
               ))}
         </div>
 
-        {!loading && (
+        {!loading && filteredArticles.length === 0 && (
+          <div className="text-center py-10">
+            <p className="text-lg text-gray-600">
+              Tidak ada artikel yang cocok dengan pencarian Anda.
+            </p>
+          </div>
+        )}
+
+        {!loading && filteredArticles.length > 0 && (
           <Pagination
             currentPage={currentPage}
-            totalPages={Math.ceil(articles.length / ARTICLES_PER_PAGE)}
-            basePath="/kegiatan"
+            totalPages={totalPages}
+            basePath={`/kegiatan${searchParam ? `?search=${searchParam}` : ''}`}
           />
         )}
       </div>

@@ -110,7 +110,7 @@ export default function GarduIndukPage() {
   return (
     <MainLayout>
       <section className="px-4 md:px-8 py-20 bg-gray-50 min-h-screen">
-        <div className="text-center mb-10">
+        <div className="text-center mt-15 mb-10">
           <h1 className="text-3xl md:text-4xl font-bold text-blue-800">Gardu Induk</h1>
           <p className="text-lg text-gray-600 mt-2">Informasi Gardu Induk per ULTG</p>
         </div>
@@ -146,7 +146,6 @@ export default function GarduIndukPage() {
                         <h3 className="text-lg font-semibold text-gray-800">{gardu.namagi}</h3> {/* Menggunakan namagi */}
                         <p className="text-sm text-blue-600 mt-1">{gardu.alamat}</p> {/* Menggunakan alamat */}
                         <Link
-                          // Mengarahkan ke halaman detail yang spesifik berdasarkan tipe dan slug
                           href={`/gardu-induk/${gardu.slug}`}
                           className="inline-block mt-4 px-4 py-2 border border-blue-600 text-blue-600 text-sm rounded hover:bg-blue-600 hover:text-white transition"
                         >

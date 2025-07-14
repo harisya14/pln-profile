@@ -60,9 +60,6 @@ export default async function GarduIndukDetailPage({ params }: { params: { slug:
     notFound(); // Ini akan memicu halaman 404 Next.js
   }
 
-  // Mendapatkan tipe ULGT dari slug yang ditemukan (jika diperlukan untuk tampilan)
-  // Ini hanya tebakan kasar, tergantung format slug Anda.
-  // Lebih baik jika API mengembalikan properti 'type' juga.
   const ultgTypeFromData = gardu.slug.split('-')[0];
 
   return (
@@ -79,34 +76,22 @@ export default async function GarduIndukDetailPage({ params }: { params: { slug:
 
           <h1 className="text-3xl md:text-4xl font-bold text-blue-800 mb-6">
             {gardu.namagi}
-            <span className="block text-xl text-gray-500 font-normal mt-2">({ultgTypeFromData.toUpperCase()})</span>
+            <span className="block text-xl text-gray-500 font-normal mt-2">{gardu.alamat}</span>
           </h1>
 
           <div className="relative w-full h-80 md:h-[400px] mb-6 rounded-lg overflow-hidden shadow-lg border border-gray-200">
-            <Image // Menggunakan ImageWithFallback
+            <Image 
               src={gardu.image}
               alt={gardu.namagi}
               fill
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
               priority
               className="object-cover"
-              // onError tidak lagi di sini, ditangani di ImageWithFallback
             />
           </div>
-
-          <p className="text-lg text-gray-700 mb-2">
-            <strong>Alamat:</strong> {gardu.alamat}
-          </p>
-
-          <p className="text-base text-gray-600 mt-4">
-            Informasi detail mengenai Gardu Induk {gardu.namagi} akan ditampilkan di sini.
-            Anda dapat menambahkan field deskripsi pada skema Prisma jika diperlukan.
-          </p>
-
           <div className="mt-10">
             <h2 className="text-3xl font-semibold text-blue-800 mb-6">Temukan Kami</h2>
             <div className="aspect-video w-full rounded-lg shadow-lg overflow-hidden border border-gray-200">
-              {/* Pastikan googleMapsEmbed adalah string HTML yang valid */}
               <div dangerouslySetInnerHTML={{ __html: gardu.googleMapsEmbed }} className="w-full h-full"></div>
             </div>
           </div>

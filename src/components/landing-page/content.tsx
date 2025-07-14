@@ -41,7 +41,7 @@ const ContentSection: React.FC = () => {
 
   return (
     <section className="bg-secondary dark:bg-gray-900">
-      <div className="gap-16 items-center py-12 px-4 mx-auto max-w-screen-xl lg:grid lg:grid-cols-2 lg:py-20 lg:px-6">
+      <div id="visi-misi" className="gap-16 items-center py-12 px-4 mx-auto max-w-screen-xl lg:grid lg:grid-cols-2 lg:py-20 lg:px-6">
         {/* Visi Misi Text */}
         <div
           ref={textRef}

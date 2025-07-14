@@ -9,6 +9,7 @@ import ContentSection from "@/src/components/landing-page/content"
 import LatestArticleSection from "@/src/components/landing-page/kegiatan"
 import GarduSection from "@/src/components/landing-page/gardu"
 
+
 type Article = {
   id: string
   title: string
@@ -45,14 +46,12 @@ export default function HomePage() {
         title="PLN UPT Tanjung Karang"
         subtitle="Energi Untuk Kehidupan. Memberikan layanan listrik terbaik untuk wilayah Lampung."
         ctaText="See More"
-        ctaLink="/"
+        ctaLink="#visi-misi"
       />
       <ContentSection />
       <TeamSection />
-
-      {/* Artikel Terbaru */}
       <LatestArticleSection articles={articles} loading={loading} />
-      <GarduSection articles={articles} loading={loading}/>
+      <GarduSection />
 
       <MapSection />
     </MainLayout>
