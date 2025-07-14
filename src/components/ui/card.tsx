@@ -42,12 +42,12 @@ export default function ArticleCard({
           </h3>
 
           {/* Render HTML content */}
-          <div className="mt-2 h-16">
+          {/* <div className="mt-2 h-16">
             <div
               className="line-clamp-3 text-sm text-gray-600 prose prose-sm overflow-hidden"
               dangerouslySetInnerHTML={{ __html: content }}
             />
-          </div>
+          </div> */}
         </div>
       </article>
     </Link>

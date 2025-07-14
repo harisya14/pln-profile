@@ -9,6 +9,8 @@ import { useRouter } from "next/navigation";
 import { toast } from "@/src/hooks/useToast";
 import DashboardLayout from "@/src/components/dashboard/dashboard-layout";
 import dynamic from "next/dynamic";
+import Link from "next/link";
+import { ChevronLeft } from "lucide-react";
 const ReactQuill = dynamic(() => import('react-quill-new'), {
   ssr: false,
   loading: () => <p>Loading editor...</p>
@@ -200,8 +202,17 @@ export default function CreateKegiatan() {
   return (
     <DashboardLayout>
       <div className="max-w-2xl mx-auto p-6">
-        <h1 className="text-2xl font-bold mb-6 text-gray-800">Create New Kegiatan</h1>
-
+      <div className="flex items-center justify-between mb-6">
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-800">
+            Create New Kegiatan
+          </h1>
+          <Button asChild variant="outline" size="sm">
+            <Link href={`/dashboard/kegiatan`} className="flex items-center gap-2">
+              <ChevronLeft className="w-4 h-4" />
+              Kembali ke Daftar
+            </Link>
+          </Button>
+        </div>
         <form className="space-y-6" onSubmit={handleSubmit}>
           {/* Title */}
           <div className="grid gap-2">

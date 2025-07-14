@@ -111,7 +111,7 @@ export default function CreateGarduPage() {
             Tambah Gardu Induk Baru ({selectedType.toUpperCase()})
           </h1>
           <Button asChild variant="outline" size="sm">
-            <Link href={`/dashboard/gardu/list?type=${selectedType}`} className="flex items-center gap-2">
+            <Link href={`/dashboard/gardu`} className="flex items-center gap-2">
               <ChevronLeft className="w-4 h-4" />
               Kembali ke Daftar
             </Link>
