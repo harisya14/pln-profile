@@ -55,9 +55,6 @@ export default function GarduSection() {
       const fetchedGardu: UltgDataItem[] = [];
       const MAX_DISPLAY_ITEMS = 6; // Batasi jumlah gardu yang ditampilkan di landing page
 
-      const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
-      console.log("Fetching Gardu Induk data from:", baseUrl); // Log base URL
-
       for (const type of ultgTypes) {
         if (fetchedGardu.length >= MAX_DISPLAY_ITEMS) {
           console.log("Max display items reached. Stopping fetch.");
@@ -66,7 +63,7 @@ export default function GarduSection() {
 
         try {
           console.log(`Attempting to fetch for type: ${type}`); // Log tipe yang sedang diambil
-          const response = await fetch(`${baseUrl}/api/ultg?type=${type}&limit=${MAX_DISPLAY_ITEMS}`, {
+          const response = await fetch(`/api/ultg?type=${type}&limit=${MAX_DISPLAY_ITEMS}`, {
             cache: "no-store",
           });
 

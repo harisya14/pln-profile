@@ -10,6 +10,7 @@ export const publicRoutes = [
   "/kegiatan/*",
   "/api/kegiatan",
   "/api/ultg",
+  "/api/manajemen",
   "/gardu-induk",
   "/gardu-induk/*",
   "/manajemen",
