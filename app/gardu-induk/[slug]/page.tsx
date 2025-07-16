@@ -19,15 +19,28 @@ interface PageProps {
     slug: string
   }>
 }
+// A helper function to get the correct base URL for server-side fetching
+const getBaseUrl = () => {
+  // If NEXT_PUBLIC_BASE_URL is set, use it. This is the best practice.
+  if (process.env.NEXT_PUBLIC_BASE_URL) {
+    return process.env.NEXT_PUBLIC_BASE_URL;
+  }
+  // If deployed on Vercel, Vercel automatically sets this variable.
+  if (process.env.VERCEL_URL) {
+    return `https://${process.env.VERCEL_URL}`;
+  }
+  // Fallback for local development
+  return "http://localhost:3000";
+};
 
 // Fungsi untuk mengambil data gardu induk tunggal dari API
 async function getUltgDetailBySlug(slug: string): Promise<UltgDataItem | null> {
   const ultgTypes = ["tarahan", "tegineneng", "pagelaran", "kotabumi"];
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
+  const baseUrl = getBaseUrl(); // Use the new helper function ✅
 
   for (const type of ultgTypes) {
     try {
-      console.log(`Attempting to fetch for type: ${type}, slug: ${slug}`); // Log untuk debugging
+      console.log(`Attempting to fetch from: ${baseUrl}/api/ultg?mode=single&type=${type}&slug=${slug}`);
       const res = await fetch(`${baseUrl}/api/ultg?mode=single&type=${type}&slug=${slug}`, {
         cache: "no-store",
       });
@@ -36,8 +49,8 @@ async function getUltgDetailBySlug(slug: string): Promise<UltgDataItem | null> {
         const contentType = res.headers.get("content-type");
         if (contentType && contentType.includes("application/json")) {
           const data: UltgDataItem = await res.json();
-          console.log(`Data found for type ${type}:`, data); // Log data yang ditemukan
-          return data; // Mengembalikan data pertama yang ditemukan
+          console.log(`Data found for type ${type}:`, data);
+          return data; 
         } else {
           const errorBody = await res.text();
           console.error(`API returned non-JSON response for type ${type}, slug ${slug}. Status: ${res.status}. Body:`, errorBody);
@@ -50,7 +63,7 @@ async function getUltgDetailBySlug(slug: string): Promise<UltgDataItem | null> {
       console.error(`Error fetching ULGT detail for type ${type}, slug ${slug}:`, error);
     }
   }
-  console.log(`Gardu Induk with slug '${slug}' not found across all types.`); // Log jika tidak ditemukan sama sekali
+  console.log(`Gardu Induk with slug '${slug}' not found across all types.`);
   return null;
 }
 

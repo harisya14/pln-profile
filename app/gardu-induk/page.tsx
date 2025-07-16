@@ -37,24 +37,23 @@ export default function GarduIndukPage() {
         { name: "ULTG PAGELARAN", apiType: "pagelaran" },
         { name: "ULTG KOTABUMI", apiType: "kotabumi" },
       ];
-
+  
       const fetchedData: GroupedUltgData[] = [];
-
+  
       for (const ultgType of ultgTypes) {
         try {
-          // Menggunakan process.env.NEXT_PUBLIC_BASE_URL jika ada, default ke localhost
-          const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
-          const response = await fetch(`${baseUrl}/api/ultg?type=${ultgType.apiType}&limit=10000`, {
-            cache: "no-store", // Pastikan data selalu fresh
+          // The `baseUrl` constant has been removed.
+          // We now use a relative path for the API call. ✅
+          const response = await fetch(`/api/ultg?type=${ultgType.apiType}&limit=10000`, {
+            cache: "no-store", // Make sure data is always fresh
           });
-
+  
           if (!response.ok) {
             const errorText = await response.text();
             throw new Error(`Gagal mengambil data untuk ${ultgType.name}: ${errorText}`);
           }
-
+  
           const data = await response.json();
-          // Periksa struktur data dari API, yang seharusnya memiliki properti 'data'
           if (data && Array.isArray(data.data)) {
             fetchedData.push({
               ultg: ultgType.name,
@@ -66,7 +65,7 @@ export default function GarduIndukPage() {
             fetchedData.push({
               ultg: ultgType.name,
               type: ultgType.apiType,
-              gardu: [], // Tambahkan array kosong jika struktur tidak sesuai
+              gardu: [], 
             });
           }
         } catch (err: any) {
@@ -75,16 +74,16 @@ export default function GarduIndukPage() {
           fetchedData.push({
             ultg: ultgType.name,
             type: ultgType.apiType,
-            gardu: [], // Tambahkan array kosong jika ada error
+            gardu: [], 
           });
         }
       }
       setGroupedGarduInduk(fetchedData);
       setLoading(false);
     };
-
+  
     fetchAllUltgData();
-  }, []); // Dependency array kosong agar hanya dijalankan sekali saat mount
+  }, []); 
 
   if (loading) {
     return (

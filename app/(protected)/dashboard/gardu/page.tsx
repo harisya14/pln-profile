@@ -63,9 +63,6 @@ export default function ListGardu() {
       }
       const data = await res.json();
       
-      // Penting: Memastikan setiap item memiliki properti 'type'
-      // Jika API Anda tidak mengembalikan 'type' di setiap item GI, 
-      // Anda perlu menambahkannya secara manual di sini.
       const itemsWithType = (data.data || []).map((item: UltgData) => ({ ...item, type: type }));
       setUltgList(itemsWithType);
 

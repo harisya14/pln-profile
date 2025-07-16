@@ -35,21 +35,21 @@ export default function ManajemenPage() {
       setLoading(true);
       setError(null);
       try {
-        const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
-        const response = await fetch(`${baseUrl}/api/manajemen`, {
-          cache: "no-store", // Selalu ambil data terbaru
+        // The baseUrl constant is no longer needed.
+        // Use a relative path, and the browser will handle the rest.
+        const response = await fetch(`/api/manajemen`, {
+          cache: "no-store", 
         });
-
+  
         if (!response.ok) {
           const errorText = await response.text();
           throw new Error(`Gagal mengambil data: ${errorText}`);
         }
-
+  
         const data: ManajemenSectionData[] = await response.json();
         setStrukturManajemen(data);
-
-        // --- Logika untuk scroll ke anchor ---
-        // Dijalankan setelah data berhasil di-set
+  
+        // --- The rest of your code remains the same ---
         const hash = window.location.hash.substring(1);
         if (hash) {
           setTimeout(() => {
@@ -57,10 +57,9 @@ export default function ManajemenPage() {
             if (element) {
               element.scrollIntoView({ behavior: "smooth", block: "start" });
             }
-          }, 100); // Beri jeda 100ms agar DOM sempat ter-update
+          }, 100);
         }
-        // --- Akhir dari logika scroll ---
-
+        
       } catch (err: any) {
         console.error("Error fetching manajemen structure:", err);
         setError(err.message);
@@ -68,9 +67,9 @@ export default function ManajemenPage() {
         setLoading(false);
       }
     };
-
+  
     fetchManajemenData();
-  }, []); // Dependency array kosong agar hanya dijalankan sekali saat komponen mount
+  }, []); // Dependency array remains empty
 
   if (loading) {
     return (
