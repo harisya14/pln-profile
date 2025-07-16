@@ -1,5 +1,6 @@
-"use client"
-import { useEffect, useState } from "react"
+'use client'
+
+import React, { useState, useEffect, Suspense } from "react"
 import { useSearchParams } from "next/navigation"
 import MainLayout from "@/src/components/layout"
 import ArticleCard from "@/src/components/ui/card"
@@ -19,7 +20,7 @@ type Article = {
 
 const ARTICLES_PER_PAGE = 12
 
-export default function ArticlesPage() {
+function ArticlesPageInner() {
   const [articles, setArticles] = useState<Article[]>([])
   const [loading, setLoading] = useState(true) 
   const [filteredArticles, setFilteredArticles] = useState<Article[]>([])
@@ -40,7 +41,6 @@ export default function ArticlesPage() {
     }
     fetchArticles()
   }, []) 
-
 
   useEffect(() => {
     const results = articles.filter(article =>
@@ -97,5 +97,13 @@ export default function ArticlesPage() {
         )}
       </div>
     </MainLayout>
+  )
+}
+
+export default function Page() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <ArticlesPageInner />
+    </Suspense>
   )
 }

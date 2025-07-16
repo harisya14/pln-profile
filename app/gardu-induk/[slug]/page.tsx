@@ -1,9 +1,7 @@
 import { notFound } from "next/navigation";
-// import Image from "next/image"; // Tidak lagi mengimpor Image langsung
-import MainLayout from "@/src/components/layout"; // Pastikan path ini benar
+import MainLayout from "@/src/components/layout";
 import Image from 'next/image'
-import Link from "next/link"; // Untuk tombol kembali
-// import ImageWithFallback from "@/src/components/ImageWithFallback"; // Mengimpor komponen baru
+import Link from "next/link";
 
 // Definisikan tipe data untuk satu Gardu Induk dari API
 interface UltgDataItem {
@@ -13,6 +11,13 @@ interface UltgDataItem {
   slug: string;
   alamat: string;
   googleMapsEmbed: string;
+}
+
+// Define the page props interface with async params
+interface PageProps {
+  params: Promise<{
+    slug: string
+  }>
 }
 
 // Fungsi untuk mengambil data gardu induk tunggal dari API
@@ -50,8 +55,9 @@ async function getUltgDetailBySlug(slug: string): Promise<UltgDataItem | null> {
 }
 
 // Komponen halaman detail Gardu Induk
-export default async function GarduIndukDetailPage({ params }: { params: { slug: string } }) {
-  const { slug } = params;
+export default async function GarduIndukDetailPage({ params }: PageProps) {
+  // Await the params since they're now async
+  const { slug } = await params;
 
   const gardu = await getUltgDetailBySlug(slug);
 

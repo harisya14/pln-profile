@@ -1,24 +1,24 @@
-"use client";
+'use client';
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Suspense } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ChevronLeft } from "lucide-react";
 import { Button } from "@/src/components/ui/button";
 import { Input } from "@/src/components/ui/input";
-import { Textarea } from "@/src/components/ui/text-area"; // Pastikan path ini benar
+import { Textarea } from "@/src/components/ui/text-area";
 import { Label } from "@/src/components/ui/label";
 import { toast } from "@/src/hooks/useToast";
 import DashboardLayout from "@/src/components/dashboard/dashboard-layout";
 
 type UltgParams = {
   namagi: string;
-  image: string; // Base64 string for image upload
+  image: string;
   alamat: string;
   googleMapsEmbed: string;
 };
 
-export default function CreateGarduPage() {
+function CreateGarduPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const initialType = searchParams.get('type') || 'tarahan';
@@ -121,13 +121,13 @@ export default function CreateGarduPage() {
         <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-200">
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <Label htmlFor="ultgType" className="block text-sm font-medium text-gray-700 mb-1">Tipe Gardu Induk</Label>
+              <Label htmlFor="ultgType">Tipe Gardu Induk</Label>
               <select
                 id="ultgType"
-                className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-gray-50 cursor-not-allowed"
+                className="mt-1 block w-full p-2 border border-gray-300 rounded-md bg-gray-50 cursor-not-allowed"
                 value={selectedType}
-                onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setSelectedType(e.target.value)} // Tipe eksplisit
                 disabled
+                onChange={(e) => setSelectedType(e.target.value)}
               >
                 <option value="tarahan">ultg Tarahan</option>
                 <option value="tegineneng">ultg Tegineneng</option>
@@ -138,19 +138,19 @@ export default function CreateGarduPage() {
             </div>
 
             <div>
-              <Label htmlFor="namagi" className="block text-sm font-medium text-gray-700 mb-1">Nama Gardu Induk (GI)</Label>
+              <Label htmlFor="namagi">Nama Gardu Induk (GI)</Label>
               <Input
                 id="namagi"
                 type="text"
                 value={namagi}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNamagi(e.target.value)} // Tipe eksplisit
+                onChange={(e) => setNamagi(e.target.value)}
                 placeholder="Contoh: GI Tarahan Utama"
                 required
               />
             </div>
 
             <div>
-              <Label htmlFor="image" className="block text-sm font-medium text-gray-700 mb-1">Gambar Gardu</Label>
+              <Label htmlFor="image">Gambar Gardu</Label>
               <Input
                 id="image"
                 type="file"
@@ -167,45 +167,39 @@ export default function CreateGarduPage() {
             </div>
 
             <div>
-              <Label htmlFor="alamat" className="block text-sm font-medium text-gray-700 mb-1">Alamat Lengkap</Label>
+              <Label htmlFor="alamat">Alamat Lengkap</Label>
               <Textarea
                 id="alamat"
                 value={alamat}
-                onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setAlamat(e.target.value)} // Tipe eksplisit
+                onChange={(e) => setAlamat(e.target.value)}
                 placeholder="Contoh: Jl. Raya Lintas Sumatera KM 10, Tarahan"
                 rows={3}
                 required
-                // Kelas-kelas ini sudah ada di komponen Textarea Shadcn UI
-                // Jika Anda tidak menggunakan Shadcn UI, Anda perlu memastikan kelas ini ada di komponen Textarea kustom Anda
-                className="flex h-auto w-full rounded-md border border-input bg-background px-3 py-2 text-base file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"
               />
             </div>
 
             <div>
-              <Label htmlFor="googleMapsEmbed" className="block text-sm font-medium text-gray-700 mb-1">Google Maps Embed (Kode iframe HTML)</Label>
+              <Label htmlFor="googleMapsEmbed">Google Maps Embed (Kode iframe HTML)</Label>
               <Textarea
                 id="googleMapsEmbed"
                 value={googleMapsEmbed}
-                onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setGoogleMapsEmbed(e.target.value)} // Tipe eksplisit
-                placeholder='Salin seluruh kode iframe dari Google Maps, contoh: <iframe src="..." width="600" height="450"></iframe>'
+                onChange={(e) => setGoogleMapsEmbed(e.target.value)}
+                placeholder='<iframe src="..." width="600" height="450"></iframe>'
                 rows={5}
                 required
-                // Kelas-kelas ini sudah ada di komponen Textarea Shadcn UI
-                className="flex h-auto w-full rounded-md border border-input bg-background px-3 py-2 text-base file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"
               />
               <p className="mt-1 text-xs text-gray-500">Pastikan Anda menyalin seluruh kode `iframe` dari Google Maps.</p>
             </div>
 
             {formError && (
-              <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
-                <strong className="font-bold">Error!</strong>
-                <span className="block sm:inline"> {formError}</span>
+              <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+                <strong className="font-bold">Error:</strong> {formError}
               </div>
             )}
 
             <Button
               type="submit"
-              className="w-full py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-md shadow-md disabled:opacity-50"
+              className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-md shadow-md"
               disabled={loading}
             >
               {loading ? "Menambahkan..." : "Tambah Gardu Induk"}
@@ -214,5 +208,14 @@ export default function CreateGarduPage() {
         </div>
       </div>
     </DashboardLayout>
+  );
+}
+
+// Wrap with Suspense
+export default function Page() {
+  return (
+    <Suspense fallback={<div>Loading form...</div>}>
+      <CreateGarduPage />
+    </Suspense>
   );
 }
