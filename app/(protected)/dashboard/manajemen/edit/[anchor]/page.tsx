@@ -6,7 +6,7 @@ import { useRouter, useParams } from "next/navigation";
 import { ChevronLeft, Plus, Trash2, X } from "lucide-react";
 import { Button } from "@/src/components/ui/button";
 import { Input } from "@/src/components/ui/input";
-import { Textarea } from "@/src/components/ui/text-area"; // Pastikan path ini benar
+import { Textarea } from "@/src/components/ui/text-area"; 
 import { Label } from "@/src/components/ui/label";
 import { toast } from "@/src/hooks/useToast";
 import DashboardLayout from "@/src/components/dashboard/dashboard-layout";
@@ -41,7 +41,7 @@ export default function EditManajemenPage() {
     anchor: "",
     orderIndex: 0,
     assistant: null,
-    containers: [[]],
+    containers: [], // PERBAIKAN LOGIKA: Nilai awal adalah array kosong
   });
   const [loading, setLoading] = useState(true); // Untuk loading data awal
   const [submitting, setSubmitting] = useState(false); // Untuk loading saat submit
@@ -70,7 +70,7 @@ export default function EditManajemenPage() {
             jabatan: data.assistant.jabatan,
             image: data.assistant.image || null, // Pastikan image adalah string atau null
           } : null,
-          containers: data.containers || [[]], // Pastikan containers tidak undefined
+          containers: data.containers || [], // PERBAIKAN LOGIKA: Fallback ke array kosong jika data.containers tidak ada
         });
       } catch (error: any) {
         toast({
@@ -393,14 +393,14 @@ export default function EditManajemenPage() {
                       <div className="mt-2 flex items-center gap-2">
                         <div className="relative w-16 h-16 rounded-full overflow-hidden border border-gray-200">
                            <img
-                              src={formData.assistant.image}
-                              alt="Asisten"
-                              className="object-cover w-full h-full"
-                              onError={(e) => {
-                                e.currentTarget.onerror = null;
-                                e.currentTarget.src = "/images/placeholder-person.png";
-                              }}
-                            />
+                             src={formData.assistant.image}
+                             alt="Asisten"
+                             className="object-cover w-full h-full"
+                             onError={(e) => {
+                               e.currentTarget.onerror = null;
+                               e.currentTarget.src = "/images/placeholder-person.png";
+                             }}
+                           />
                         </div>
                         <Button type="button" variant="ghost" size="icon" onClick={() => handleRemoveImage("assistant")}>
                           <Trash2 className="w-4 h-4 text-red-500" />
@@ -415,14 +415,13 @@ export default function EditManajemenPage() {
             {/* Bagian Daftar Anggota (Containers) */}
             <div className="space-y-6">
               <h2 className="text-lg font-semibold text-gray-700">Daftar Anggota</h2>
-              {/* PERUBAHAN DI SINI: Tombol "Tambah Grup Anggota" */}
-              <Button
-                type="button"
-                onClick={handleAddGroup}
-                className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white" // Menggunakan warna biru
-              >
-                <Plus className="w-4 h-4" /> Tambah Grup Anggota
-              </Button>
+                <Button
+                  type="button"
+                  onClick={handleAddGroup}
+                  className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white" 
+                >
+                  <Plus className="w-4 h-4" /> Tambah Grup Anggota
+                </Button>
 
               {formData.containers.map((group, groupIndex) => (
                 <div key={groupIndex} className="border p-4 rounded-md bg-gray-50 space-y-4">
@@ -492,7 +491,6 @@ export default function EditManajemenPage() {
                       </div>
                     </div>
                   ))}
-                  {/* PERUBAHAN DI SINI: Tombol "Tambah Anggota ke Grup Ini" */}
                   <Button
                     type="button"
                     className="w-full flex items-center gap-2 mt-4 bg-blue-600 hover:bg-blue-700 text-white"
