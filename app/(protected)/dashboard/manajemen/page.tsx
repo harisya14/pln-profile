@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import Image from "next/image"; // Menggunakan next/image untuk optimasi
+import Image from "next/image";
 import {
   Table,
   TableHeader,
@@ -24,19 +24,19 @@ import {
 } from "@/src/components/ui/alert-dialog";
 import { Button } from "@/src/components/ui/button";
 import { Pencil, Trash2, Plus, X } from "lucide-react";
-import { toast } from "@/src/hooks/useToast"; // Asumsi ini adalah hook toast Anda
-import DashboardLayout from "@/src/components/dashboard/dashboard-layout"; // Pastikan path ini benar
+import { toast } from "@/src/hooks/useToast";
+import DashboardLayout from "@/src/components/dashboard/dashboard-layout";
 
-// Definisikan tipe data untuk Person (sesuai respons API)
+// Define the type for Person data
 interface PersonData {
   name: string;
   jabatan: string | null;
   imageUrl?: string | null;
 }
 
-// Definisikan tipe data untuk satu bagian Manajemen (sesuai respons API)
+// Define the type for a Management Section
 interface ManajemenSectionData {
-  id: string; // ID dari Prisma
+  id: string; // ID from Prisma
   title: string;
   anchor: string;
   orderIndex: number;
@@ -48,54 +48,52 @@ interface ManajemenSectionData {
   containers: PersonData[][]; // Array of arrays of PersonData
 }
 
-const ITEMS_PER_PAGE = 5; // Jumlah item per halaman untuk paginasi
+const ITEMS_PER_PAGE = 5;
 
 export default function ListManajemen() {
   const [manajemenList, setManajemenList] = useState<ManajemenSectionData[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [page, setPage] = useState(1);
-  const [deletingAnchor, setDeletingAnchor] = useState<string | null>(null); // Menyimpan anchor untuk dihapus
-  const [selectedImage, setSelectedImage] = useState<string | null>(null); // Untuk modal pratinjau gambar
+  const [deletingAnchor, setDeletingAnchor] = useState<string | null>(null);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
-  // Fungsi untuk mengambil data manajemen dari API
-  const fetchManajemenData = async () => {
+  // Fetch management data from the API
+  const fetchManajemenData = () => {
     setLoading(true);
     setError(null);
-    try {
-      const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
-      const res = await fetch(`${baseUrl}/api/manajemen`, {
-        cache: "no-store", // Pastikan data selalu fresh
+    fetch("/api/manajemen", {
+      cache: "no-store", // Ensure data is always fresh
+    })
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error("Gagal memuat data manajemen.");
+        }
+        return res.json();
+      })
+      .then((data: ManajemenSectionData[]) => {
+        setManajemenList(data);
+      })
+      .catch((err) => {
+        console.error("Error fetching manajemen data:", err);
+        setError(err.message);
+      })
+      .finally(() => {
+        setLoading(false);
       });
-
-      if (!res.ok) {
-        const errorData = await res.json();
-        throw new Error(errorData.error || "Gagal memuat data manajemen.");
-      }
-      const data: ManajemenSectionData[] = await res.json();
-      setManajemenList(data);
-    } catch (err: any) {
-      console.error("Error fetching manajemen data:", err);
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
   };
 
-  // Panggil fetch data saat komponen dimuat
+  // Call fetch data when the component mounts
   useEffect(() => {
     fetchManajemenData();
   }, []);
 
-  // Fungsi untuk menangani penghapusan data manajemen
-  const handleDelete = async () => {
-    if (!deletingAnchor) return;
-
-    setLoading(true); // Set loading saat operasi delete berlangsung
+  // Handle the deletion of a management section
+  const handleDelete = async (anchor: string) => {
+    setDeletingAnchor(anchor);
 
     try {
-      const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
-      const res = await fetch(`${baseUrl}/api/manajemen?anchor=${deletingAnchor}`, {
+      const res = await fetch(`/api/manajemen?anchor=${anchor}`, {
         method: "DELETE",
       });
 
@@ -104,13 +102,12 @@ export default function ListManajemen() {
           title: "Sukses",
           description: "Anda berhasil menghapus bagian manajemen.",
         });
-        // Perbarui state secara lokal setelah penghapusan berhasil
-        setManajemenList((prev) => prev.filter((item) => item.anchor !== deletingAnchor));
-        // Jika halaman saat ini kosong setelah penghapusan, kembali ke halaman sebelumnya
+        // Refresh data to ensure consistency
+        fetchManajemenData();
+        // Adjust page if the last item on it was deleted
         if (paginated.length === 1 && page > 1) {
             setPage(prev => prev - 1);
         }
-        fetchManajemenData(); // Refresh data untuk memastikan konsistensi
       } else {
         const errorData = await res.json();
         toast({
@@ -127,8 +124,7 @@ export default function ListManajemen() {
         variant: "destructive",
       });
     } finally {
-      setDeletingAnchor(null); // Reset state deletingAnchor
-      setLoading(false); // Matikan loading
+      setDeletingAnchor(null); // Reset deleting state
     }
   };
 
@@ -163,7 +159,7 @@ export default function ListManajemen() {
                     <TableHead className="w-12 text-center">No</TableHead>
                     <TableHead>Judul Bagian</TableHead>
                     <TableHead>Anchor</TableHead>
-                    <TableHead className="w-24">Order Index</TableHead>
+                    <TableHead className="w-24 text-center">Order</TableHead>
                     <TableHead>Asisten Manager</TableHead>
                     <TableHead>Anggota</TableHead>
                     <TableHead className="text-left">Aksi</TableHead>
@@ -208,7 +204,7 @@ export default function ListManajemen() {
                           )}
                         </TableCell>
                         <TableCell className="w-96 max-w-xs break-words whitespace-normal h-12">
-                          {item.containers.length > 0 ? (
+                          {item.containers.flat().length > 0 ? (
                             item.containers.map((group, groupIndex) => (
                               <div key={groupIndex} className="mb-2 last:mb-0">
                                 <p className="font-semibold text-xs text-gray-700">Grup {groupIndex + 1}:</p>
@@ -227,7 +223,7 @@ export default function ListManajemen() {
                                           }}
                                         />
                                       )}
-                                      {person.name} ({person.jabatan})
+                                      {person.name} ({person.jabatan || 'Anggota'})
                                     </li>
                                   ))}
                                 </ul>
@@ -252,7 +248,6 @@ export default function ListManajemen() {
                                 size="sm"
                                 disabled={deletingAnchor === item.anchor}
                                 className="bg-red-600 hover:bg-red-700"
-                                onClick={() => setDeletingAnchor(item.anchor)}
                               >
                                 <Trash2 className="w-4 h-4 mr-1" />
                                 {deletingAnchor === item.anchor ? "Menghapus..." : "Hapus"}
@@ -266,10 +261,10 @@ export default function ListManajemen() {
                                 </AlertDialogDescription>
                               </AlertDialogHeader>
                               <AlertDialogFooter>
-                                <AlertDialogCancel onClick={() => setDeletingAnchor(null)}>Batal</AlertDialogCancel>
+                                <AlertDialogCancel>Batal</AlertDialogCancel>
                                 <AlertDialogAction
                                   className="bg-red-600 text-white hover:bg-red-700"
-                                  onClick={handleDelete}
+                                  onClick={() => handleDelete(item.anchor)}
                                 >
                                   Ya, hapus
                                 </AlertDialogAction>
@@ -301,7 +296,7 @@ export default function ListManajemen() {
                   variant="outline"
                   size="sm"
                   onClick={() => setPage((p) => Math.min(p + 1, totalPages))}
-                  disabled={page === totalPages}
+                  disabled={page === totalPages || totalPages === 0}
                 >
                   Selanjutnya
                 </Button>
@@ -310,7 +305,7 @@ export default function ListManajemen() {
           </>
         )}
 
-        {/* Modal Pratinjau Gambar */}
+        {/* Image Preview Modal */}
         {selectedImage && (
           <div
             className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4"
@@ -330,13 +325,13 @@ export default function ListManajemen() {
               <Image
                 src={selectedImage}
                 alt="Pratinjau Gambar"
-                width={800} // Sesuaikan dengan ukuran yang wajar
-                height={600} // Sesuaikan dengan ukuran yang wajar
+                width={800}
+                height={600}
                 className="rounded-lg object-contain max-h-[80vh] w-full h-auto"
-                priority // Memuat gambar lebih awal
+                priority
                 onError={(e) => {
                   e.currentTarget.onerror = null;
-                  e.currentTarget.src = `https://placehold.co/800x600/cccccc/333333?text=Gambar+Tidak+Dapat+Dimuat`;
+                  e.currentTarget.src = `https://placehold.co/800x600/cccccc/333333?text=Gambar+Gagal+Dimuat`;
                 }}
               />
             </div>
