@@ -14,10 +14,11 @@ interface UltgDataItem {
 }
 
 // Definisikan props untuk halaman ini
+// PERBAIKAN: Tipe 'params' disesuaikan dengan log error Vercel
 interface PageProps {
-  params: {
+  params: Promise<{
     slug: string;
-  };
+  }>;
 }
 
 /**
@@ -73,7 +74,8 @@ async function getUltgDetailBySlug(slug: string): Promise<UltgDataItem | null> {
  * Komponen Halaman Detail Gardu Induk (Server Component)
  */
 export default async function GarduIndukDetailPage({ params }: PageProps) {
-  const { slug } = params;
+  // PERBAIKAN: 'await' ditambahkan untuk mendapatkan nilai dari Promise params
+  const { slug } = await params;
   const gardu = await getUltgDetailBySlug(slug);
 
   // Jika data gardu tidak ditemukan setelah mencari di semua tipe, tampilkan halaman 404.
@@ -116,6 +118,7 @@ export default async function GarduIndukDetailPage({ params }: PageProps) {
           <div className="mt-10">
             <h2 className="text-2xl font-semibold text-gray-700 mb-4 border-b pb-2">Lokasi di Peta</h2>
             <div className="aspect-video w-full rounded-lg shadow-sm overflow-hidden border border-gray-200">
+              {/* Menggunakan dangerouslySetInnerHTML untuk merender string HTML dari iframe */}
               <div dangerouslySetInnerHTML={{ __html: gardu.googleMapsEmbed }} className="w-full h-full" />
             </div>
           </div>
