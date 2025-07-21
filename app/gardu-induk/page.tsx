@@ -37,22 +37,21 @@ export default function GarduIndukPage() {
         { name: "ULTG PAGELARAN", apiType: "pagelaran" },
         { name: "ULTG KOTABUMI", apiType: "kotabumi" },
       ];
-  
+
       const fetchedData: GroupedUltgData[] = [];
-  
+
       for (const ultgType of ultgTypes) {
         try {
-          // The `baseUrl` constant has been removed.
-          // We now use a relative path for the API call. ✅
+          // Menggunakan path relatif untuk pemanggilan API
           const response = await fetch(`/api/ultg?type=${ultgType.apiType}&limit=10000`, {
-            cache: "no-store", // Make sure data is always fresh
+            cache: "no-store", // Pastikan data selalu segar
           });
-  
+
           if (!response.ok) {
             const errorText = await response.text();
             throw new Error(`Gagal mengambil data untuk ${ultgType.name}: ${errorText}`);
           }
-  
+
           const data = await response.json();
           if (data && Array.isArray(data.data)) {
             fetchedData.push({
@@ -65,7 +64,7 @@ export default function GarduIndukPage() {
             fetchedData.push({
               ultg: ultgType.name,
               type: ultgType.apiType,
-              gardu: [], 
+              gardu: [],
             });
           }
         } catch (err: any) {
@@ -74,16 +73,16 @@ export default function GarduIndukPage() {
           fetchedData.push({
             ultg: ultgType.name,
             type: ultgType.apiType,
-            gardu: [], 
+            gardu: [],
           });
         }
       }
       setGroupedGarduInduk(fetchedData);
       setLoading(false);
     };
-  
+
     fetchAllUltgData();
-  }, []); 
+  }, []);
 
   if (loading) {
     return (
@@ -126,26 +125,27 @@ export default function GarduIndukPage() {
                 <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
                   {group.gardu.map((gardu) => (
                     <div
-                      key={gardu.id} // Menggunakan item.id sebagai key
+                      key={gardu.id}
                       className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition"
                     >
                       <div className="h-60 w-full relative">
                         <Image
                           src={gardu.image}
-                          alt={gardu.namagi} // Menggunakan namagi sebagai alt text
+                          alt={gardu.namagi}
                           fill
                           className="object-cover"
                           onError={(e) => {
                             e.currentTarget.onerror = null; // Mencegah loop error
-                            e.currentTarget.src = `/images/gardu/placeholder.jpg`; // Fallback ke gambar placeholder lokal
+                            e.currentTarget.src = `/images/gardu/placeholder.jpg`; // Fallback
                           }}
                         />
                       </div>
                       <div className="p-4">
-                        <h3 className="text-lg font-semibold text-gray-800">{gardu.namagi}</h3> {/* Menggunakan namagi */}
-                        <p className="text-sm text-blue-600 mt-1">{gardu.alamat}</p> {/* Menggunakan alamat */}
+                        <h3 className="text-lg font-semibold text-gray-800">{gardu.namagi}</h3>
+                        <p className="text-sm text-blue-600 mt-1">{gardu.alamat}</p>
+                        {/* --- PERBAIKAN DI SINI --- */}
                         <Link
-                          href={`/gardu-induk/${gardu.slug}`}
+                          href={`/gardu-induk/${gardu.slug}?type=${group.type}`}
                           className="inline-block mt-4 px-4 py-2 border border-blue-600 text-blue-600 text-sm rounded hover:bg-blue-600 hover:text-white transition"
                         >
                           More Detail
