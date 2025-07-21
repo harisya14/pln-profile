@@ -41,7 +41,7 @@ export default function NotFound() {
           Go Back
         </Button>
         <Button
-          onClick={() => router.push('/dashboard')}
+          onClick={() => router.push('/')}
           variant='ghost'
           size='lg'
           className='text-sky-500 hover:text-sky-600 hover:bg-sky-100'

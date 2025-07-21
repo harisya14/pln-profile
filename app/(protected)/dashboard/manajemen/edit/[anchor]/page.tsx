@@ -51,9 +51,7 @@ export default function EditManajemenPage() {
   useEffect(() => {
     async function fetchManajemenData() {
       try {
-        const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
-        // Mengambil data manajemen berdasarkan anchor
-        const res = await fetch(`${baseUrl}/api/manajemen?anchor=${currentAnchor}`);
+        const res = await fetch(`/api/manajemen?anchor=${currentAnchor}`);
         if (!res.ok) {
           const errorData = await res.json();
           throw new Error(errorData.error || "Gagal memuat data manajemen.");
